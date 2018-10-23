@@ -1,0 +1,65 @@
+version: "3"
+services:
+  fog-controller:
+    build: ./fog-controller
+    depends_on:
+      - comsat
+    ports:
+      - "54421:54421"
+    links:
+      - comsat
+      # - ioauthoring
+    container_name: fog-controller
+    networks:
+      docker_network:
+        ipv4_address: "10.0.0.2"
+  comsat:
+    build: ./comsat
+    ports:
+      - "53321:80"
+    container_name: comsat
+    networks:
+      docker_network:
+        ipv4_address: "10.0.0.3"
+  iofog_1:
+    build: ./iofog
+    depends_on:
+      - fog-controller
+    links:
+      - fog-controller:fogcontroller.iofog.org
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    container_name: iofog_1
+    networks: 
+      docker_network:
+        ipv4_address: "10.0.0.4"
+  iofog_2:
+    build: ./iofog
+    depends_on:
+      - fog-controller
+    links:
+      - fog-controller:fogcontroller.iofog.org
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    container_name: iofog_2
+    networks: 
+      docker_network:
+        ipv4_address: "10.0.0.5"
+  freeboard:
+    build: ./freeboard
+    depends_on:
+      - iofog_2
+    ports:
+      - "52221:80"
+    container_name: freeboard
+    networks:
+      docker_network:
+        ipv4_address: "10.0.0.6"
+networks:
+  docker_network:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: "10.0.0.0/24"
