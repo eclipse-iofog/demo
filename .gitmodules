@@ -1,0 +1,3 @@
+[submodule "iofog-controller/src"]
+	path = iofog-controller/src
+	url = https://github.com/ioFog/FogController.git

@@ -1,52 +1,55 @@
 version: "3"
 services:
-  fog-controller:
-    build: ./fog-controller
-    depends_on:
-      - comsat
-    ports:
-      - "54421:54421"
-    links:
-      - comsat
-      # - ioauthoring
-    container_name: fog-controller
-    networks:
-      docker_network:
-        ipv4_address: "10.0.0.2"
-  comsat:
-    build: ./comsat
+  iofog-connector:
+    build: ./iofog-connector
     ports:
       - "53321:80"
-    container_name: comsat
+    container_name: iofog-connector
     networks:
       docker_network:
-        ipv4_address: "10.0.0.3"
-  iofog_1:
-    build: ./iofog
+        ipv4_address: "11.0.0.3"
+  iofog-controller:
+    build: ./iofog-controller
     depends_on:
-      - fog-controller
+      - iofog-connector
+    ports:
+      - "54421:51121"
     links:
-      - fog-controller:fogcontroller.iofog.org
+      - iofog-connector
+    container_name: iofog-controller
+    networks:
+      docker_network:
+        ipv4_address: "11.0.0.2"
+  iofog_1:
+    build: ./iofog-agent
+    depends_on:
+      - iofog-controller
+    environment:
+      - NODE_NUMBER=1
+    links:
+      - iofog-controller:iofog-controller
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     container_name: iofog_1
     networks: 
       docker_network:
-        ipv4_address: "10.0.0.4"
+        ipv4_address: "11.0.0.4"
   iofog_2:
-    build: ./iofog
+    build: ./iofog-agent
     depends_on:
-      - fog-controller
+      - iofog-controller
+    environment:
+      - NODE_NUMBER=2
     links:
-      - fog-controller:fogcontroller.iofog.org
+      - iofog-controller:iofog-controller
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     container_name: iofog_2
     networks: 
       docker_network:
-        ipv4_address: "10.0.0.5"
+        ipv4_address: "11.0.0.5"
   freeboard:
     build: ./freeboard
     depends_on:
@@ -56,10 +59,10 @@ services:
     container_name: freeboard
     networks:
       docker_network:
-        ipv4_address: "10.0.0.6"
+        ipv4_address: "11.0.0.6"
 networks:
   docker_network:
     driver: bridge
     ipam:
      config:
-       - subnet: "10.0.0.0/24"
+       - subnet: "11.0.0.0/24"
