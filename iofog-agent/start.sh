@@ -24,12 +24,22 @@ function provision() {
     iofog provision $key
 }
 
+function wait() {
+    while true; do
+        str=`eval "$1"`
+        if [[ ! $str =~ $2 ]]; then
+            break
+        fi
+        sleep .5
+    done
+}
+
 service iofog start
 if [ -f /first_run.tmp ]; then
-    sleep 5
+    wait "iofog status" "iofog is not running."
     iofog config -idc off
-    sleep 5
     iofog config -a $CONTROLLER_HOST
+    wait "curl --request GET --url $CONTROLLER_HOST/status" "Failed"
     provision
     rm /first_run.tmp
 fi
