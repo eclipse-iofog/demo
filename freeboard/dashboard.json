@@ -85,7 +85,7 @@
 			"name": "Sensors",
 			"type": "JSON",
 			"settings": {
-				"url": "http://192.168.56.101:5050",
+				"url": "http://11.0.0.2:10101",
 				"use_thingproxy": false,
 				"refresh": 1,
 				"method": "GET"

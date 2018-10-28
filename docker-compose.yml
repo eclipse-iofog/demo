@@ -5,21 +5,15 @@ services:
     ports:
       - "53321:80"
     container_name: iofog-connector
-    networks:
-      docker_network:
-        ipv4_address: "11.0.0.3"
   iofog-controller:
     build: ./iofog-controller
     depends_on:
       - iofog-connector
     ports:
-      - "54421:51121"
+      - "51121:51121"
     links:
       - iofog-connector
     container_name: iofog-controller
-    networks:
-      docker_network:
-        ipv4_address: "11.0.0.2"
   iofog_1:
     build: ./iofog-agent
     depends_on:
@@ -32,9 +26,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     container_name: iofog_1
-    networks: 
-      docker_network:
-        ipv4_address: "11.0.0.4"
   iofog_2:
     build: ./iofog-agent
     depends_on:
@@ -47,22 +38,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     container_name: iofog_2
-    networks: 
-      docker_network:
-        ipv4_address: "11.0.0.5"
-  freeboard:
-    build: ./freeboard
-    depends_on:
-      - iofog_2
-    ports:
-      - "52221:80"
-    container_name: freeboard
-    networks:
-      docker_network:
-        ipv4_address: "11.0.0.6"
-networks:
-  docker_network:
-    driver: bridge
-    ipam:
-     config:
-       - subnet: "11.0.0.0/24"
+  # freeboard:
+  #   build: ./freeboard
+  #   depends_on:
+  #     - iofog_2
+  #   ports:
+  #     - "52221:80"
+  #   container_name: freeboard
