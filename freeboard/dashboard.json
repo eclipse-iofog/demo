@@ -85,7 +85,7 @@
 			"name": "Sensors",
 			"type": "JSON",
 			"settings": {
-				"url": "http://11.0.0.2:10101",
+				"url": "http://localhost:10101",
 				"use_thingproxy": false,
 				"refresh": 1,
 				"method": "GET"

@@ -3,8 +3,9 @@ services:
   iofog-connector:
     build: ./iofog-connector
     ports:
-      - "53321:80"
+      - "53321:8080"
     container_name: iofog-connector
+    network_mode: bridge
   iofog-controller:
     build: ./iofog-controller
     depends_on:
@@ -14,7 +15,8 @@ services:
     links:
       - iofog-connector
     container_name: iofog-controller
-  iofog_1:
+    network_mode: bridge
+  iofog-agent-1:
     build: ./iofog-agent
     depends_on:
       - iofog-controller
@@ -25,11 +27,13 @@ services:
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    container_name: iofog_1
-  iofog_2:
+    container_name: iofog-agent-1
+    network_mode: bridge
+  iofog-agent-2:
     build: ./iofog-agent
     depends_on:
       - iofog-controller
+      - iofog-agent-1
     environment:
       - NODE_NUMBER=2
     links:
@@ -37,11 +41,5 @@ services:
     privileged: true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    container_name: iofog_2
-  # freeboard:
-  #   build: ./freeboard
-  #   depends_on:
-  #     - iofog_2
-  #   ports:
-  #     - "52221:80"
-  #   container_name: freeboard
+    container_name: iofog-agent-2
+    network_mode: bridge
