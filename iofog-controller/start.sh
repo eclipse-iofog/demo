@@ -36,19 +36,19 @@ if [ -f /first_run.tmp ]; then
         --url $CONTROLLER_HOST/catalog/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"Sensors","category": "DEMO","publisher":"Edgeworx","registryId":2,"images":[{"containerImage":"iofog/sensors:latest","fogTypeId":1}]}')
+        --data '{"name":"Sensors","category": "DEMO","publisher":"Edgeworx","registryId":1,"images":[{"containerImage":"iofog/sensors:latest","fogTypeId":1}]}')
     sensorsId=$(echo $item | jq -r .id)
     item=$(curl --request POST \
         --url $CONTROLLER_HOST/catalog/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"Rest API","category": "DEMO","publisher":"Edgeworx","registryId":2,"images":[{"containerImage":"iofog/freeboard-api:latest","fogTypeId":1}]}')
+        --data '{"name":"Rest API","category": "DEMO","publisher":"Edgeworx","registryId":1,"images":[{"containerImage":"iofog/freeboard-api:latest","fogTypeId":1}]}')
     apiId=$(echo $item | jq -r .id)
     item=$(curl --request POST \
         --url $CONTROLLER_HOST/catalog/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"freeboard","category": "DEMO","publisher":"Edgeworx","registryId":2,"images":[{"containerImage":"iofog/freeboard:latest","fogTypeId":1}]}')
+        --data '{"name":"freeboard","category": "DEMO","publisher":"Edgeworx","registryId":1,"images":[{"containerImage":"iofog/freeboard:latest","fogTypeId":1}]}')
     freeboardId=$(echo $item | jq -r .id)
 
     item=$(curl --request POST \
