@@ -1,11 +1,9 @@
 FROM node:alpine
 
-COPY src/package.json /src/package.json
-COPY src/src /src/src
-RUN apk add curl jq
-RUN cd /src && \
-    npm i >> /dev/null && \
-    sh ./src/sequelize/rebuild_dev_db.sh >> /dev/null
+RUN apk add curl jq python bash
+RUN npm i -g iofogcontroller@0.9.5 --unsafe-perm
+RUN cd /usr/local/lib/node_modules/iofogcontroller && \
+  sh ./src/sequelize/rebuild_dev_db.sh
 
 RUN touch /first_run.tmp
 

@@ -1,16 +1,16 @@
 #!/usr/bin/env sh
 
-cd /src
 export NODE_ENV=development
 
 CONTROLLER_HOST="http://localhost:51121/api/v3"
 
-node src/main start
+# iofog-controller config dev-mode -o
+iofog-controller start
 if [ -f /first_run.tmp ]; then
-    node src/main user add -f John -l Doe -e user@domain.com -p "#Bugs4Fun"
+    iofog-controller user add -f John -l Doe -e user@domain.com -p "#Bugs4Fun"
 
     connector_ip=$(getent hosts iofog-connector | awk '{ print $1 }')
-    node src/main connector add -n iofog-connector -d $connector_ip -i $connector_ip -H
+    iofog-controller connector add -n iofog-connector -d $connector_ip -i $connector_ip -H
 
     while true; do
         item=$(curl --request POST \
@@ -36,19 +36,19 @@ if [ -f /first_run.tmp ]; then
         --url $CONTROLLER_HOST/catalog/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"Sensors","category": "DEMO","publisher":"Saeid","registryId":1,"images":[{"containerImage":"baghbidi/public:sensors","fogTypeId":1}]}')
+        --data '{"name":"Sensors","category": "DEMO","publisher":"Edgeworx","registryId":2,"images":[{"containerImage":"iofog/sensors:latest","fogTypeId":1}]}')
     sensorsId=$(echo $item | jq -r .id)
     item=$(curl --request POST \
         --url $CONTROLLER_HOST/catalog/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"Rest API","category": "DEMO","publisher":"Saeid","registryId":1,"images":[{"containerImage":"baghbidi/public:freeboard-api","fogTypeId":1}]}')
+        --data '{"name":"Rest API","category": "DEMO","publisher":"Edgeworx","registryId":2,"images":[{"containerImage":"iofog/freeboard-api:latest","fogTypeId":1}]}')
     apiId=$(echo $item | jq -r .id)
     item=$(curl --request POST \
         --url $CONTROLLER_HOST/catalog/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"freeboard","category": "DEMO","publisher":"Saeid","registryId":1,"images":[{"containerImage":"baghbidi/public:freeboard","fogTypeId":1}]}')
+        --data '{"name":"freeboard","category": "DEMO","publisher":"Edgeworx","registryId":2,"images":[{"containerImage":"iofog/freeboard:latest","fogTypeId":1}]}')
     freeboardId=$(echo $item | jq -r .id)
 
     item=$(curl --request POST \

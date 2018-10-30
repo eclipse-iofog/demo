@@ -42,18 +42,19 @@ function provision() {
         --header 'Content-Type: application/json')
     key=$(echo $provisioning | jq -r .key)
 
-    iofog provision $key
+    iofog-agent provision $key
 }
 
-service iofog start
+service iofog-agent start
 if [ -f /first_run.tmp ]; then
-    wait "iofog status" "iofog is not running."
-    iofog config -idc off
-    iofog config -a $CONTROLLER_HOST
+    wait "iofog-agent status" "iofog is not running."
+    iofog-agent config -idc off
+    iofog-agent config -a $CONTROLLER_HOST
     wait "curl --request GET --url $CONTROLLER_HOST/status" "Failed"
-    sleep 3
+    sleep 10
     login
     provision
     rm /first_run.tmp
 fi
+
 tail -f /dev/null
