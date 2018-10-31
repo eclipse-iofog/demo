@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
-export NODE_ENV=development
-
-CONTROLLER_HOST="http://localhost:51121/api/v3"
+CONTROLLER_HOST="http://localhost:54421/api/v3"
 
 # iofog-controller config dev-mode -o
 iofog-controller start

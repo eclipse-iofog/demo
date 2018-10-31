@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
+CONTROLLER_HOST="http://localhost:54421/api/v3"
 
 token=""
 uuid=""

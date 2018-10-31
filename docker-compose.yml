@@ -11,7 +11,7 @@ services:
     depends_on:
       - iofog-connector
     ports:
-      - "51121:51121"
+      - "54421:54421"
     links:
       - iofog-connector
     container_name: iofog-controller
