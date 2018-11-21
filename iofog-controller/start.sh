@@ -1,9 +1,13 @@
 #!/usr/bin/env sh
 
-cd /src
 export NODE_ENV=development
 
 CONTROLLER_HOST="http://localhost:51121/api/v3"
+
+cd /usr/local/lib/node_modules/iofogcontroller/src/sequelize
+if [ ! -f ./dev_database.sqlite ]; then
+    sh ./rebuild_dev_db.sh
+fi
 
 iofog-controller start
 if [ -f /first_run.tmp ]; then

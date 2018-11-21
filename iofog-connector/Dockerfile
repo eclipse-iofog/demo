@@ -10,7 +10,7 @@ RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true
 RUN apt-get install -y oracle-java8-installer
 RUN apt-get update -qq
 RUN curl -s https://packagecloud.io/install/repositories/iofog/iofog-connector/script.deb.sh | sudo bash
-RUN sudo apt-get install iofog-connector=1.0.0
+RUN sudo apt-get install iofog-connector
 RUN touch /first_run.tmp
 
 COPY . /

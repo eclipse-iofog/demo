@@ -34,12 +34,14 @@ if [ -f /first_run.tmp ]; then
     done
 
     uuid=""
+    echo "Waiting for ioFog Controller..."
     while true; do
-        item=$(curl --request POST \
+        item=$(curl --request GET \
             --url $CONTROLLER_HOST/iofog-list \
             --header "Authorization: $token" \
             --header 'Content-Type: application/json')
-        uuid=$(echo $item | jq -r '.[] | select(.name == "ioFog Node") | .uuid')
+        echo $item
+        uuid=$(echo $item | jq -r '.fogs[] | select(.name == "ioFog Node") | .uuid')
 
         if [ ! -z "$uuid" ]; then
             break
