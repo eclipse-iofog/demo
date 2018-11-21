@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-CONTROLLER_HOST="http://iofog-controller:54421/api/v3"
+CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
 
 token=""
 uuid=""
@@ -24,11 +24,11 @@ function login() {
 
 function provision() {
     while true; do
-        item=$(curl --request POST \
+        item=$(curl --request GET \
             --url $CONTROLLER_HOST/iofog-list \
             --header "Authorization: $token" \
             --header 'Content-Type: application/json')
-        uuid=$(echo $item | jq -r '.[] | select(.name == "Agent '"$NODE_NUMBER"'") | .uuid')
+        uuid=$(echo $item | jq -r '.fogs[] | select(.name == "Agent '"$NODE_NUMBER"'") | .uuid')
 
         if [ ! -z "$uuid" ]; then
             break
@@ -50,8 +50,15 @@ if [ -f /first_run.tmp ]; then
     wait "iofog-agent status" "iofog is not running."
     iofog-agent config -idc off
     iofog-agent config -a $CONTROLLER_HOST
+
     wait "curl --request GET --url $CONTROLLER_HOST/status" "Failed"
-    sleep 10
+
+    docker exec iofog-controller sh -c "ls /ready" > /dev/null 2>&1
+    while [ `echo $?` != 0 ]; do
+        sleep .5
+        docker exec iofog-controller sh -c "ls /ready" > /dev/null 2>&1
+    done
+
     login
     provision
     rm /first_run.tmp

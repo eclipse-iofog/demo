@@ -10,8 +10,10 @@ services:
     build: ./iofog-controller
     depends_on:
       - iofog-connector
+    environment:
+      - NODE_ENV=development
     ports:
-      - "54421:54421"
+      - "51121:51121"
     links:
       - iofog-connector
     container_name: iofog-controller
