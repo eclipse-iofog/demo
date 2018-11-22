@@ -11,9 +11,9 @@ services:
     depends_on:
       - iofog-connector
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     ports:
-      - "51121:51121"
+      - "54421:54421"
     links:
       - iofog-connector
     container_name: iofog-controller
