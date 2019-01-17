@@ -1,4 +1,10 @@
+FROM mlaccetti/docker-oracle-java8-ubuntu-16.04 as javaSource
 FROM jpetazzo/dind
+
+COPY --from=javaSource /usr/lib/jvm/java-8-oracle /usr/lib/jvm/java-8-oracle
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-oracle/bin/java 1
 
 RUN apt-get update -qq
 RUN apt-get install -qqy sudo
@@ -7,11 +13,6 @@ RUN apt-get install -qqy jq
 RUN apt-get install -qqy software-properties-common
 RUN curl -s https://packagecloud.io/install/repositories/computology/apt-backport/script.deb.sh | sudo bash
 RUN sudo apt-get install -y apt=1.2.10
-RUN add-apt-repository -y ppa:webupd8team/java
-RUN apt-get update -qq
-RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
-RUN apt-get install -y oracle-java8-installer
-RUN apt-get update -qq
 RUN curl -s https://packagecloud.io/install/repositories/iofog/iofog-agent/script.deb.sh | sudo bash
 RUN sudo apt-get install iofog-agent
 RUN touch /first_run.tmp
