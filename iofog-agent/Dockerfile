@@ -5,6 +5,8 @@ RUN apt-get install -qqy sudo
 RUN apt-get install -qqy curl
 RUN apt-get install -qqy jq
 RUN apt-get install -qqy software-properties-common
+RUN curl -s https://packagecloud.io/install/repositories/computology/apt-backport/script.deb.sh | sudo bash
+RUN sudo apt-get install -y apt=1.2.10
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN apt-get update -qq
 RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
