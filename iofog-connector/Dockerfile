@@ -1,4 +1,4 @@
-FROM mlaccetti/docker-oracle-java8-ubuntu-16.04
+FROM iofog/ubuntu-16.04-java8
 
 RUN apt-get update -qq
 RUN apt-get install -qqy sudo
