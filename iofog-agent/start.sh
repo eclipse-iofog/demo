@@ -13,7 +13,7 @@ function wait() {
 
 service iofog-agent start
 if [ -f /first_run.tmp ]; then
-    wait "iofog-agent status" "iofog is not running."
+    wait "iofog-agent status" "ioFog Agent is not running."
     iofog-agent config -idc off
     iofog-agent config -a $CONTROLLER_HOST
     wait "curl --request GET --url $CONTROLLER_HOST/status" "Failed"
