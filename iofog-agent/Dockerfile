@@ -1,4 +1,4 @@
-FROM mlaccetti/docker-oracle-java8-ubuntu-16.04 as javaSource
+FROM iofog/ubuntu-16.04-java8 as javaSource
 FROM jpetazzo/dind
 
 COPY --from=javaSource /usr/lib/jvm/java-8-oracle /usr/lib/jvm/java-8-oracle
