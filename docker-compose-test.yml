@@ -1,42 +1,14 @@
 #
-# Launches a Test cluster that includes our Test Runner image
+# Includes a Test Runner image that is launched and will execute a suite of smoke tests against the ioFog cluster.
 #
-# Once up, Test Runner will execute a suite of smoke tests against the ioFog cluster
+# NOTE: On it's own this config does nothing, it should be launched at the same time the main docker-compose.yml config.
 #
 version: "3"
 services:
-
-  # ioFog Connector
-  iofog-connector:
-    build: ./iofog-connector
-    container_name: iofog-connector
-    ports:
-      - "53321:8080"
     
-  # ioFog Controller, depends on Connector
-  iofog-controller:
-    build: ./iofog-controller
-    container_name: iofog-controller
-    depends_on:
-      - iofog-connector
-    ports:
-      - "51121:51121"
-    environment:
-      - NODE_ENV=development
-    
-  # ioFog Agent, depends on Connector and Controller
-  iofog-agent:
-    build: ./iofog-agent
-    container_name: iofog-agent
-    depends_on:
-      - iofog-controller
-    privileged: true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    
-  # Test Runner, runs our test suite
-  test-runner:
-    build: ./test-runner
-    container_name: test-runner
-    depends_on:
-      - iofog-agent
+    # Test Runner, runs our test suite
+    test-runner:
+        build: ./test-runner
+        container_name: test-runner
+        depends_on:
+            - iofog-agent

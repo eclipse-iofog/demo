@@ -27,7 +27,3 @@ pyresttest ${CONTROLLER_HOST} tests/demo-test-suite.yml
 
 echo "Test Runner Smoke tests Complete"
 
-#while [ true ]
-#do
-#    sleep 10s
-#done

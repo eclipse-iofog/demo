@@ -1,31 +1,36 @@
+#
+# Launches a demo three node cluster that includes a node for Controller, Connector and Agent.
+#
+# Post launch, we run a set of startup.sh scripts to connect and configure all three services to
+# work as a provisioned one node ECN.
+#
 version: "3"
 services:
-  iofog-connector:
-    build: ./iofog-connector
-    ports:
-      - "53321:8080"
-    container_name: iofog-connector
-    network_mode: bridge
-  iofog-controller:
-    build: ./iofog-controller
-    depends_on:
-      - iofog-connector
-    ports:
-      - "51121:51121"
-    links:
-      - iofog-connector
-    container_name: iofog-controller
-    environment:
-      - NODE_ENV=development
-    network_mode: bridge
-  iofog-agent:
-    build: ./iofog-agent
-    depends_on:
-      - iofog-controller
-    links:
-      - iofog-controller:iofog-controller
-    privileged: true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    container_name: iofog-agent
-    network_mode: bridge
+    
+    # ioFog Connector
+    iofog-connector:
+        build: ./iofog-connector
+        container_name: iofog-connector
+        ports:
+            - "53321:8080"
+    
+    # ioFog Controller, depends on Connector
+    iofog-controller:
+        build: ./iofog-controller
+        container_name: iofog-controller
+        depends_on:
+            - iofog-connector
+        ports:
+            - "51121:51121"
+        environment:
+            - NODE_ENV=development
+    
+    # ioFog Agent, depends on Connector and Controller
+    iofog-agent:
+        build: ./iofog-agent
+        container_name: iofog-agent
+        depends_on:
+            - iofog-controller
+        privileged: true
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
