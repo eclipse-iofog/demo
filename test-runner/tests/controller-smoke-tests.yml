@@ -1,0 +1,23 @@
+#
+# Test Suite of Smoke tests for our Demo docker environment
+#
+# This suite is built using 'pyresttest' (https://github.com/svanoort/pyresttest)
+#
+---
+- config:
+    - testset: "Testing connection to iofog-controller via REST API"
+
+- test:
+    - name: "Non Auth Connection"
+    - group: "Controller"
+    - url: "/api/v3/iofog"
+    - expected_status: [404]
+
+- test:
+    - name: "Authentication using basic auth"
+    - group: "Controller"
+    - url: "/api/v3/user/login"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'POST'
+    - body: '{"email":"user@domain.com","password":"#Bugs4Fun"}'
+    - expected_status: [200]
