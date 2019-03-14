@@ -1,0 +1,14 @@
+#
+# Includes a Test Runner image that is launched and will execute a suite of smoke tests against the ioFog cluster.
+#
+# NOTE: On it's own this config does nothing, it should be launched at the same time the main docker-compose.yml config.
+#
+version: "3"
+services:
+    
+    # Test Runner, runs our test suite
+    test-runner:
+        build: ./test-runner
+        container_name: test-runner
+        depends_on:
+            - iofog-agent
