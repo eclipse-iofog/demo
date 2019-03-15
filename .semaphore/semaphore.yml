@@ -21,5 +21,6 @@ blocks:
               - name: Smoke
                 commands:
                     - checkout
-                    - echo ./run-smoke-tests.sh
+                    - ls -1
+                    - ./run-smoke-tests.sh
 
