@@ -1,3 +1,5 @@
+language: bash
+
 env:
     - DOCKER_COMPOSE_VERSION=1.23.2
     
@@ -6,5 +8,20 @@ services:
     
 before_install:
     
-    # Figure out what version of docker-compose we're running
+    # Update to our version of docker-compose
+    - sudo rm /usr/local/bin/docker-compose
+    - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+    
+    # Output what version of docker-compose we're running
     - docker-compose --version
+    
+jobs:
+    include:
+        - stage: build
+          name: "Build Images"
+          script: ./build
+        - stage: test
+          name: "Smoke Tests Suite"
+          script: ./run-smoke-tests.sh
