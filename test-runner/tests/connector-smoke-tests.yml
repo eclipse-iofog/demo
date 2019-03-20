@@ -6,7 +6,49 @@
 -  config:
     -   testset: "Testing connection to iofog-connector via REST API"
 
-# FINISH ME
-#-  test:
-#    - name: "Check Connection"
-#    - group: "Controller"
+
+-  test:
+    - name: "Create public route"
+    - group: "Connector"
+    - url: "/route"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'POST'
+    - body: '{"publisherId":"testPublisher","routeType":"public"}'
+    - expected_status: [200]
+
+-  test:
+    - name: "Create private route"
+    - group: "Connector"
+    - url: "/route"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'POST'
+    - body: '{"publisherId":"testPublisher","routeType":"private"}'
+    - expected_status: [200]
+
+-  test:
+    - name: "Delete public route"
+    - group: "Connector"
+    - url: "/route/public/testPublisher"
+    - method: 'DELETE'
+    - expected_status: [204]
+
+-  test:
+    - name: "Delete private route"
+    - group: "Connector"
+    - url: "/route/private/testPublisher"
+    - method: 'DELETE'
+    - expected_status: [204]
+
+-  test:
+    - name: "Public route doesn't exist"
+    - group: "Connector"
+    - url: "/route/public/testPublisher"
+    - method: 'DELETE'
+    - expected_status: [404]
+
+-  test:
+    - name: "Private route doesn't exist"
+    - group: "Connector"
+    - url: "/route/private/testPublisher"
+    - method: 'DELETE'
+    - expected_status: [404]

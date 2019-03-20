@@ -2,6 +2,7 @@
 
 # Our test suite config
 CONTROLLER_HOST="http://iofog-controller:51121"
+CONNECTOR_HOST="http://iofog-connector:8080"
 TEST_SUITE="tests/demo-test-suite.yml"
 
 #

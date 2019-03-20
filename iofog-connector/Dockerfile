@@ -9,7 +9,6 @@ RUN apt-get update -qq && apt-get install -qqy \
 # Install iofog-connector
 RUN curl -s https://packagecloud.io/install/repositories/iofog/iofog-connector/script.deb.sh | sudo bash
 RUN sudo apt-get install iofog-connector
-RUN touch /first_run.tmp
 
 # Copy in the files we need
 COPY start.sh /start.sh
