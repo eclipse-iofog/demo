@@ -1,0 +1,26 @@
+version: v1.0
+name: Demo Environment Pipeline
+agent:
+    machine:
+        type: e1-standard-2
+        os_image: ubuntu1804
+blocks:
+    - name: "Build"
+      task:
+          jobs:
+              - name: Docker build
+                commands:
+                    - checkout
+                    - ls -1
+                    - echo "Building Docker Images"
+                    - ./build
+                    - echo "done"
+    - name: "Smoke tests"
+      task:
+          jobs:
+              - name: Smoke
+                commands:
+                    - checkout
+                    - ls -1
+                    - ./run-smoke-tests.sh
+

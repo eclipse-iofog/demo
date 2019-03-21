@@ -1,0 +1,5 @@
+#
+# Build will attempt to build all of the Docker images
+#
+#!/usr/bin/env sh
+docker-compose -f docker-compose.yml -f docker-compose-test.yml build
