@@ -19,3 +19,6 @@
 
 # Import our Connector Tests
 - import: tests/connector-smoke-tests.yml
+
+# Import our Connector Tests
+- import: tests/agent-smoke-tests.yml

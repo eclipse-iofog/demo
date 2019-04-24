@@ -1,0 +1,9 @@
+#
+# Test Suite of Smoke tests for our Demo docker environment
+#
+# This suite is built using 'pyresttest' (https://github.com/svanoort/pyresttest)
+#
+
+---
+- config:
+    - testset: "Testing connection to iofog-agent via REST API"
