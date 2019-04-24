@@ -56,3 +56,30 @@
       - method: 'POST'
       - body: '{"Authorization":""}'
       - expected_status: [200]
+
+- test:
+    - name: "Registry Creation"
+    - group: "Controller"
+    - url: "/api/v3/registries"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'POST'
+    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
+    - expected_status: [201]
+
+- test:
+    - name: "Registry Get"
+    - group: "Controller"
+    - url: "/api/v3/registries"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'GET'
+    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
+    - expected_status: [200]
+
+- test:
+    - name: "Registry Creation"
+    - group: "Controller"
+    - url: "/api/v3/registries/${id}"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'GET'
+    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
+    - expected_status: [204]
