@@ -1,29 +1,24 @@
 #!/usr/bin/env bash
 
-# Our test suite config
-CONTROLLER_HOST="http://iofog-controller:51121"
-TEST_SUITE="tests/demo-test-suite.yml"
-
 #
 # Wait until we can connect to a url given in $1
 #
 function waitFor() {
-
-    # Can we connect?
+    echo "Waiting for $1"
     until $(curl --output /dev/null --silent --head --connect-to --url ${1}); do
-      printf '.'
       sleep 2
     done
+    echo "$1 is up"
 }
 
 
 # Wait until Controller has come up
-echo "Waiting for Controller to start"
-waitFor ${CONTROLLER_HOST}
+for HOST in http://iofog-controller:51121 http://iofog-connector:8080 http://iofog-agent:54321 ; do
+  waitFor "$HOST"
+done
 
 echo "Beginning Test Runner Smoke tests.."
 python --version
-pyresttest ${CONTROLLER_HOST} tests/demo-test-suite.yml
+pyresttest http:// tests/demo-test-suite.yml
 
 echo "Test Runner Smoke tests Complete"
-

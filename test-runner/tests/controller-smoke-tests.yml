@@ -10,49 +10,29 @@
 - test:
     - name: "Non Auth Connection"
     - group: "Controller"
-    - url: "/api/v3/iofog"
+    - url: "iofog-controller:51121/api/v3/iofog"
     - expected_status: [404]
 
 - test:
-      - name: "Test Status"
+      - name: "Get Status"
       - group: "Controller"
-      - url: "/api/v3/status"
+      - url: "iofog-controller:51121/api/v3/status"
       - headers: {'Content-Type': 'application/json'}
-      - method: 'POST'
+      - method: 'GET'
       - expected_status: [200]
 
 - test:
-      - name: "Create User"
+      - name: "Get Email Activation"
       - group: "Controller"
-      - url: "/api/v3/status"
+      - url: "iofog-controller:51121/api/v3/email-activation"
       - headers: {'Content-Type': 'application/json'}
-      - method: 'POST'
-      - body: '{"email":"user@domain.com","password":"#Bugs4Fun"}'
-      - expected_status: [201]
-
-- test:
-      - name: "Authentication using basic auth"
-      - group: "Controller"
-      - url: "/api/v3/user/login"
-      - headers: {'Content-Type': 'application/json'}
-      - method: 'POST'
-      - body: '{"email":"user@domain.com","password":"#Bugs4Fun"}'
+      - method: 'GET'
       - expected_status: [200]
 
 - test:
-      - name: "Authentication using basic auth"
+      - name: "Get Fog Types"
       - group: "Controller"
-      - url: "/api/v3/user/profile"
+      - url: "iofog-controller:51121/api/v3/fog-types"
       - headers: {'Content-Type': 'application/json'}
-      - method: 'POST'
-      - body: '{"email":"user@domain.com","password":"#Bugs4Fun"}'
-      - expected_status: [200]
-
-- test:
-      - name: "Authentication using basic auth"
-      - group: "Controller"
-      - url: "/api/v3/user/profile"
-      - headers: {'Content-Type': 'application/json'}
-      - method: 'POST'
-      - body: '{"Authorization":""}'
+      - method: 'GET'
       - expected_status: [200]
