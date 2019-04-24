@@ -1,0 +1,26 @@
+#
+# Test connecting to user REST API endpoints
+#
+
+---
+-  config:
+    -   testset: "Testing connection to user REST API endpoints"
+
+- test:
+      - name: "Get Status"
+      - group: "User"
+      - url: "iofog-controller:51121/api/v3/user/signup"
+      - headers: {'Content-Type': 'application/json'}
+      - body: '{"firstName":"Serge","lastName":"Radinovich","email":"serge@edgeworx.io","password":"123pwer89iu23409i"}'
+      - method: "POST"
+      - expected_status: [201]
+
+- test:
+      - name: "Login"
+      - group: "User"
+      - url: "iofog-controller:51121/api/v3/user/login"
+      - headers: {'Content-Type': 'application/json'}
+      - body: '{"email":"serge@edgeworx.io","password":"123pwer89iu23409i"}'
+      - method: "POST"
+      - expected_status: [200]
+
