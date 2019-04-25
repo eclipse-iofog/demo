@@ -14,5 +14,5 @@
     -  url: "/api/v3/iofog"
     -  expected_status: [404]
 
-- import: tests/controller-smoke-tests.yml
-- import: tests/connector-smoke-tests.yml
+- import: tests/smoke/controller-smoke-tests.yml
+- import: tests/smoke/connector-smoke-tests.yml

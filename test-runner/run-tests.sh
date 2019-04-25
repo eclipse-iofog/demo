@@ -22,3 +22,8 @@ python --version
 pyresttest http:// tests/demo-test-suite.yml #--log debug
 
 echo "Test Runner Smoke tests Complete"
+
+echo "Running Agent Smoke Tests..."
+bats ./test-runner/tests/smoke/agent-smoke-tests.bats
+
+echo "Agent Smoke Tests Complete"
