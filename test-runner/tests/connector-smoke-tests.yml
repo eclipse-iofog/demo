@@ -6,7 +6,38 @@
 -  config:
     -   testset: "Testing connection to iofog-connector via REST API"
 
-# FINISH ME
-#-  test:
-#    - name: "Check Connection"
-#    - group: "Controller"
+- test:
+      - name: "Add Public Pipe"
+      - group: "Connector"
+      - url: "iofog-connector:8080/api/v2/mapping/add?mapping={'type':'public','maxconnections':60,'heartbeatabsencethreshold':200000}"
+      - headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      - method: 'POST'
+      - expected_status: [200]
+      - extract_binds:
+        - 'public_id': {'jsonpath_mini': 'id'}
+
+- test:
+      - name: "Add Private Pipe"
+      - group: "Connector"
+      - url: "iofog-connector:8080/api/v2/mapping/add?mapping={'type':'private','maxconnectionsport1':1, 'maxconnectionsport2':1, 'heartbeatabsencethresholdport1':200000, 'heartbeatabsencethresholdport2':200000}"
+      - headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      - method: 'POST'
+      - expected_status: [200]
+      - extract_binds:
+        - 'private_id': {'jsonpath_mini': 'id'}
+
+- test:
+      - name: "Remove Public Pipe"
+      - group: "Connector"
+      - url: {'template':"iofog-connector:8080/api/v2/remove?mappingid=$public_id"}
+      - headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      - method: 'POST'
+      - expected_status: [200]
+
+- test:
+      - name: "Remove Private Pipe"
+      - group: "Connector"
+      - url: {'template':"iofog-connector:8080/api/v2/remove?mappingid=$private_id"}
+      - headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      - method: 'POST'
+      - expected_status: [200]

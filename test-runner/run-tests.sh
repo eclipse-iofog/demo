@@ -19,6 +19,6 @@ done
 
 echo "Beginning Test Runner Smoke tests.."
 python --version
-pyresttest http:// tests/demo-test-suite.yml
+pyresttest http:// tests/demo-test-suite.yml #--log debug
 
 echo "Test Runner Smoke tests Complete"

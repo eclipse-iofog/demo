@@ -11,7 +11,7 @@
     - name: "Non Auth Connection"
     - group: "Controller"
     - url: "iofog-controller:51121/api/v3/iofog"
-    - expected_status: [404]
+    - expected_status: [404]q
 
 - test:
       - name: "Get Status"
@@ -35,41 +35,112 @@
       - url: "iofog-controller:51121/api/v3/fog-types"
       - headers: {'Content-Type': 'application/json'}
       - method: 'GET'
-      - body: '{"Authorization":""}'
       - expected_status: [200]
 
 - test:
-    - name: "Registry Creation"
-    - group: "Controller"
-    - url: "/api/v3/registries"
-    - headers: {'Content-Type': 'application/json'}
-    - method: 'POST'
-    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
-    - expected_status: [201]
+      - name: "Sign up"
+      - group: "User"
+      - url: "iofog-controller:51121/api/v3/user/signup"
+      - headers: {'Content-Type': 'application/json'}
+      - body: '{"firstName":"Serge","lastName":"Radinovich","email":"serge@edgeworx.io","password":"123pwer89iu23409i"}'
+      - method: "POST"
+      - expected_status: [201]
 
 - test:
-    - name: "Registry Get"
-    - group: "Controller"
-    - url: "/api/v3/registries"
-    - headers: {'Content-Type': 'application/json'}
-    - method: 'GET'
-    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
-    - expected_status: [200]
+      - name: "Login"
+      - group: "User"
+      - url: "iofog-controller:51121/api/v3/user/login"
+      - headers: {'Content-Type': 'application/json'}
+      - body: '{"email":"serge@edgeworx.io","password":"123pwer89iu23409i"}'
+      - method: "POST"
+      - expected_status: [200]
+      - extract_binds:
+        - 'accessToken': {'jsonpath_mini': 'accessToken'}
 
 - test:
-    - name: "Registry Creation"
-    - group: "Controller"
-    - url: "/api/v3/registries/${id}"
-    - headers: {'Content-Type': 'application/json'}
-    - method: 'GET'
-    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
-    - expected_status: [204]
+      - name: "Get Profile"
+      - group: "User"
+      - url: "iofog-controller:51121/api/v3/user/profile"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
 
 - test:
-    - name: "Registry Creation"
-    - group: "Controller"
-    - url: "/api/v3/registries/${id}"
-    - headers: {'Content-Type': 'application/json'}
-    - method: 'GET'
-    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
-    - expected_status: [204]
+      - name: "Get Flow"
+      - group: "Flow"
+      - url: "iofog-controller:51121/api/v3/flow"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
+
+- test:
+      - name: "Get Iofog Node List"
+      - group: "Iofog"
+      - url: "iofog-controller:51121/api/v3/iofog-list"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
+
+# TODO: Need agent details first
+#- test:
+#      - name: "Create a new ioFog node"
+#      - group: "Iofog"
+#      - url: "iofog-controller:51121/api/v3/iofog"
+#      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+#      - body: '{ "fogType": { "id": 1, "name": "Standard Linux (x86)", "image": "iointegrator1.png", "description": "A standard Linux server of at least moderate processing power and capacity. Compatible with common Linux types such as Ubuntu, Red Hat, and CentOS." } }'
+#      - method: "POST"
+#      - expected_status: [200]
+#
+# TODO: Need to register agent first
+#- test:
+#      - name: "Get Iofog Node Info"
+#      - group: "Iofog"
+#      - url: {'template':"iofog-controller:51121/api/v3/iofog/$node_id"}
+#      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+#      - method: "GET"
+#      - expected_status: [200]
+
+- test:
+      - name: "Create Agent Node"
+      - group: "Iofog"
+      - url: "iofog-controller:51121/api/v3/iofog"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - body: '{"name":"agent-smith","fogType":0}'
+      - method: "POST"
+      - extract_binds:
+        - 'uuid': {'jsonpath_mini': 'uuid'}
+      - expected_status: [201]
+
+- test:
+      - name: "Provision Key for Agent"
+      - group: "Iofog"
+      - url: {'template':"iofog-controller:51121/api/v3/iofog/$uuid/provisioning-key"}
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - extract_binds:
+        - 'key': {'jsonpath_mini': 'key'}
+      - expected_status: [201]
+
+- test:
+      - name: "Get Microservices Catalog"
+      - group: "Catalog"
+      - url: "iofog-controller:51121/api/v3/catalog/microservices"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
+
+- test:
+      - name: "Get Registries"
+      - group: "Registries"
+      - url: "iofog-controller:51121/api/v3/registries"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
+
+- test:
+      - name: "Log out"
+      - group: "User"
+      - url: "iofog-controller:51121/api/v3/user/logout"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "POST"
+      - expected_status: [204]
