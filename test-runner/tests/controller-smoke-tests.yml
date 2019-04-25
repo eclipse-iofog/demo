@@ -61,7 +61,6 @@
       - name: "Get Profile"
       - group: "User"
       - url: "iofog-controller:51121/api/v3/user/profile"
-#      - url: {'template':"iofog-controller:51121/api/v3/user/profile/$accessToken"}
       - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
       - method: "GET"
       - expected_status: [200]
@@ -78,6 +77,22 @@
       - name: "Get Iofog Node List"
       - group: "Iofog"
       - url: "iofog-controller:51121/api/v3/iofog-list"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
+
+- test:
+      - name: "Get Microservices Catalog"
+      - group: "Catalog"
+      - url: "iofog-controller:51121/api/v3/catalog/microservices"
+      - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
+      - method: "GET"
+      - expected_status: [200]
+
+- test:
+      - name: "Get Registries"
+      - group: "Registries"
+      - url: "iofog-controller:51121/api/v3/registries"
       - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
       - method: "GET"
       - expected_status: [200]
