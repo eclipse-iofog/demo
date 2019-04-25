@@ -143,8 +143,4 @@
       - url: "iofog-controller:51121/api/v3/user/logout"
       - headers: {template:{'Content-Type': 'application/json', 'Authorization': "$accessToken"}}
       - method: "POST"
-<<<<<<< HEAD
       - expected_status: [204]
-=======
-      - expected_status: [204]
->>>>>>> 886a0f5110bba45cdd249ed5cfe9e4ce26427e84
