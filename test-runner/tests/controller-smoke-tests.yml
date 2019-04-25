@@ -64,3 +64,12 @@
     - method: 'GET'
     - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
     - expected_status: [204]
+
+- test:
+    - name: "Registry Creation"
+    - group: "Controller"
+    - url: "/api/v3/registries/${id}"
+    - headers: {'Content-Type': 'application/json'}
+    - method: 'GET'
+    - body: '{"Authorization":${AUTHORIZATION_TOKEN}}'
+    - expected_status: [204]

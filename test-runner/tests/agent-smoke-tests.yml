@@ -7,3 +7,60 @@
 ---
 - config:
     - testset: "Testing connection to iofog-agent via REST API"
+
+- test:
+      - name: "Get Status"
+      - group: "Agent"
+      - cmd: "iofog-agent status"
+      - expected_status: "True"
+
+- test:
+      - name: "Automatic Selection of Network"
+      - group: "Agent"
+      - cmd: "cat /etc/iofog-agent/config.xml | grep <network_interface>dynamic</network_interface>"
+      - expected_status: "True"
+
+- test:
+      - name: "Stop Service"
+      - grouop: "Agent"
+      - cmd: "service iofog-agent stop && sleep 5"
+      - expected_status: "True"
+
+- test:
+      - name: "Start Service"
+      - grouop: "Agent"
+      - cmd: "service iofog-agent start && sleep 5"
+      - expected_status: "True"
+
+- test:
+      - name: "Check Version"
+      - group: "Agent"
+      - cmd: "iofog-agent version"
+      - expected_output: "True"
+
+- test:
+      - name: "Check Info"
+      - group: "Agent"
+      - cmd: "iofog-agent info"
+      - expected_status: "True"
+
+- test:
+      - name: "Check RAM Config False"
+      - group: "Agent"
+      - cmd: "iofog-agent -m "
+        - params: "50", "test"
+      - expected_status: "False"
+
+- test:
+      - name: "Check CPU Config True"
+      - group: "Agent"
+      - cmd: "iofog-agent -p "
+            - params: "50", "80"
+      - expected_status: "False"
+
+- test:
+      - name: "Check CPU Config False"
+      - group: "Agent"
+      - cmd: "iofog-agent -p "
+            - params: "0", "120"
+      - expected_status: "False"
