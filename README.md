@@ -1,3 +1,5 @@
-# demo
+# Usage
 
-FIX ME!
+```
+./run-smoke-tests.sh
+```
