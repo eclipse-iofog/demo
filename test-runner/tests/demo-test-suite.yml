@@ -16,4 +16,3 @@
 
 - import: tests/controller-smoke-tests.yml
 - import: tests/connector-smoke-tests.yml
-- import: tests/agent-smoke-tests.yml

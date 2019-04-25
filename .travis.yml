@@ -8,3 +8,4 @@ before_install:
     
     # Figure out what version of docker-compose we're running
     - docker-compose --version
+    - bash install.sh
