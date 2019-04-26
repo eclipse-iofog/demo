@@ -10,7 +10,7 @@ PREFIX_CMD="docker exec ${CONTAINER_ID}"
 
 @test "iofog-agent network_interface" {
   result="$(${PREFIX_CMD} nano /etc/iofog-agent/config.xml | grep '<network_interface>dynamic</network_interface>' )"
-  [[ "${result}"== *'dynamic'* ]]
+  [[ "${result}" == *'dynamic'* ]]
 }
 
 @test "iofog-agent version" {
