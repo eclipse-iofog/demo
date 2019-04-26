@@ -1,5 +1,5 @@
 # Usage
 
 ```
-./run-smoke-tests.sh
+./run.sh
 ```

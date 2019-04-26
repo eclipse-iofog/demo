@@ -8,16 +8,18 @@ FROM python:3
 RUN apt-get update -qq && apt-get install -y \
     sudo \
     python-pycurl \
-    vim
+    vim \
+    jq
 
 RUN git clone https://github.com/sstephenson/bats.git && cd bats && ./install.sh /usr/local
 
 # Install the pyresttest and deps (the basis of all our smoke tests)
-RUN pip install pyresttest jsonschema future
+RUN pip install pyresttest jsonschema future shyaml
 
 # Copy over all the files we need
 COPY run-tests.sh /
 COPY tests /tests/
+COPY conf /conf/
 
 # Run our tests
 CMD [ "/run-tests.sh" ]

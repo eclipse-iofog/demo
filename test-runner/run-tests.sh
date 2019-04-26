@@ -11,19 +11,18 @@ function waitFor() {
     echo "$1 is up"
 }
 
+CONTROLLER=$(cat conf/controller.conf | tr -d '\n')
+CONNECTOR=$(cat conf/connector.conf | tr -d '\n')
 
 # Wait until Controller has come up
-for HOST in http://iofog-controller:51121 http://iofog-connector:8080 http://iofog-agent:54321 ; do
+for HOST in http://"$CONTROLLER" http://"$CONNECTOR"; do
   waitFor "$HOST"
 done
 
-echo "Beginning Test Runner Smoke tests.."
-python --version
-pyresttest http:// tests/demo-test-suite.yml #--log debug
+echo "Beginning Smoke Tests.."
+pyresttest http://"$CONTROLLER" tests/smoke/controller.yml
+pyresttest http://"$CONNECTOR" tests/smoke/connector.yml
 
 echo "Test Runner Smoke tests Complete"
 
-echo "Running Agent Smoke Tests..."
-bats ./test-runner/tests/smoke/agent-smoke-tests.bats
-
-echo "Agent Smoke Tests Complete"
+echo "Beginning Integration Tests"
