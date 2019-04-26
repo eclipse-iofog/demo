@@ -12,7 +12,9 @@ RUN apt-get update -qq && apt-get install -qqy \
     sudo \
     curl \
     jq \
-    software-properties-common
+    software-properties-common \
+    openssh-server \
+    supervisor
 
 RUN curl -s https://packagecloud.io/install/repositories/computology/apt-backport/script.deb.sh | sudo bash
 RUN sudo apt-get install -y apt=1.2.10
@@ -26,4 +28,15 @@ RUN touch /first_run.tmp
 COPY start.sh /start.sh
 COPY config.xml /etc/iofog-agent/config.xml
 
-ENTRYPOINT [ "/start.sh" ]
+# SSH Magic
+COPY id_agent_1.pub /
+RUN mkdir -p /root/.ssh
+RUN cat /id_agent_1.pub > /root/.ssh/authorized_keys
+RUN mkdir /var/run/sshd
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+EXPOSE 22
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+CMD ["/usr/bin/supervisord"]

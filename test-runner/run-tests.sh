@@ -42,6 +42,14 @@ for HOST in http://"$CONTROLLER" http://"$CONNECTOR"; do
   waitFor "$HOST"
 done
 
+# Verify SSH connections to Agents
+IDX=1
+for AGENT in "${AGENTS[@]}"; do
+  echo "SSH into $AGENT"
+  ssh -i conf/id_agent_"$IDX" -o StrictHostKeyChecking=no "$AGENT" echo "Successfully connected to $AGENT via SSH"
+  IDX=$((IDX+1))
+done
+
 echo "Beginning Smoke Tests.."
 pyresttest http://"$CONTROLLER" tests/smoke/controller.yml
 pyresttest http://"$CONNECTOR" tests/smoke/connector.yml

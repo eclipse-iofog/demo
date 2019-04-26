@@ -8,6 +8,7 @@ echo 'iofog-controller:51121' > test-runner/conf/controller.conf
 echo 'root@iofog-agent' > test-runner/conf/agents.conf
 rm test-runner/conf/id_agent_*
 ssh-keygen -t ecdsa -N "" -f test-runner/conf/id_agent_1 -q
+cp test-runner/conf/id_agent_1.pub iofog-agent/
 
 docker-compose -f docker-compose.yml -f docker-compose-test.yml up \
     --build \
