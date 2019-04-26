@@ -1,5 +1,6 @@
 #!/usr/bin/bats
 
+# Import Agents from our agents.conf file we generate when building
 function importAgents() {
     AGENTS=()
     while IFS= read -r HOST
@@ -8,25 +9,37 @@ function importAgents() {
     done < conf/agents.conf
 }
 
+# Import our config stuff, so we aren't hardcoding the variables we're testing for. Add to this if more tests are needed
+function importConfig() {
+    config=$(cat config.json)
+    ports=$(echo ${config} | json select '.ports')
+    envVariable=$(echo ${config} | json select '.environment')
+    volumeFile=$(echo ${config} | json select '.volumeFile')
+}
+
+# SSH into our agent containers, so we can run local commands
 function sshAgent() {
     AGENT=$1
     IDX=$2
+    CMD=$3
     echo "SSH into $AGENT"
-    ssh -i conf/id_agent_"$IDX" -o StrictHostKeyChecking=no "$AGENT" echo "Successfully connected to $AGENT via SSH"
+    ssh -i conf/id_agent_"$IDX" -o StrictHostKeyChecking=no "$AGENT" "${CMD}"
 
 }
 CONTAINER_ID=$(docker ps | grep iofog-agent | awk '{print $1}')
 importAgents
+importConfig
 
+# Test that the SSH connection to Agents is Valid
 @test "Integration SHH Into Agents Checking" {
   IDX=1
   finalResult=0
+  CMD="echo 'Successfully connected to $AGENT via SSH'"
 
   for AGENT in "${AGENTS[@]}"; do
-      result=$(sshAgent "${AGENT}" "${IDX}")
+      result=$(sshAgent "${AGENT}" "${IDX}" "${CMD}")
       if [[ "${result}" -ne "0" ]]; then
           finalResult=${result}
-          skip
       fi
       IDX=$((IDX+1))
   done
@@ -34,31 +47,72 @@ importAgents
   [[ ${finalResult} -eq 0 ]]
 }
 
+# Test that Volumes have been mapped across correctly
 @test "Integration Volume Checking" {
+    IDX=1
+    finalResult=0
+    CMD="test -f FILENAME"
 
-  result="$(docker inspect --format='{{.Mounts}}' ${CONTAINER_ID})"
-  [[ ${result} ==  ]]
+    for AGENT in "${AGENTS[@]}"; do
+        result=$(sshAgent "${AGENT}" "${IDX}" "${CMD}")
+        if [[ ${result} -ne 0 ]]; then
+            finalResult=${result}
+        fi
+    done
+    [[ ${finalResult} -eq 0 ]]
 }
 
 @test "Integration Port Checking" {
-  result="$(docker inspect --format='{{json .Config.ExposedPorts }}' ${CONTAINER_ID})"
-  [[ ${result} ==  ]]
-}
+    IDX=1
+    finalResult=0
+    CMD="telnet localhost ${ports}"
 
+    for AGENT in "${AGENTS[@]}"; do
+        result=$(sshAgent "${AGENT}" "${IDX}" "${CMD}")
+        if [[ ${result} -ne 0 ]]; then
+            finalResult=${result}
+        fi
+    done
+  [[ ${finalResult} ==  ]]
+}
 
 @test "Integration Routes Checking" {
-  result="$()" #Need to decide on what we're sending over, to see valid routes
-  [[ ${result} ==  ]]
+    IDX=1
+    finalResult=0
+    CMD="cat /etc"
+    for AGENT in "${AGENTS[@]}"; do
+        result=$(sshAgent "${AGENT}" "${IDX}" "${CMD}")
+        if [[ ${result} -ne 0 ]]; then
+            finalResult=${result}
+        fi
+    done
+  [[ ${finalResult} ==  ]]
 }
 
-
 @test "Integration Privileged Checking" {
-  result="$(docker inspect --format='{{.HostConfig.Privileged}}' ${CONTAINER_ID})"
-  [[ ${result} ==  ]]
+    IDX=1
+    finalResult=0
+    CMD="telnet localhost ${ports}"
+    for AGENT in "${AGENTS[@]}"; do
+        result=$(sshAgent "${AGENT}" "${IDX}" "${CMD}")
+        result="$(docker inspect --format='{{json .Config.ExposedPorts }}' ${CONTAINER_ID})"
+        if [[ ${result} -ne 0 ]]; then
+            finalResult=${result}
+        fi
+    done
+  [[ ${finalResult} ==  ]]
 }
 
 @test "Integration Environment Variables Checking" {
-  result="$(docker exec ${CONTAINER_ID} bash -c 'echo "${ENV_VAR}"')"
-  [[ ${result} ==  ]]
+    IDX=1
+    finalResult=0
+    CMD="[ ! -z '$envVariable' ]"
+    for AGENT in "${AGENTS[@]}"; do
+        result=$(sshAgent "${AGENT}" "${IDX}" "${CMD}")
+        if [[ "${result}" -ne 0 ]]; then
+            finalResult=${result}
+        fi
+    done
+    [[ ${finalResult} == 0 ]]
 }
 
