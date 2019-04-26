@@ -10,6 +10,8 @@ RUN apt-get update -qq && apt-get install -y \
     python-pycurl \
     vim
 
+RUN git clone https://github.com/sstephenson/bats.git && cd bats && ./install.sh /usr/local
+
 # Install the pyresttest and deps (the basis of all our smoke tests)
 RUN pip install pyresttest jsonschema future
 
