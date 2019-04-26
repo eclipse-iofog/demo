@@ -73,7 +73,7 @@ importConfig
             finalResult=${result}
         fi
     done
-  [[ ${finalResult} ==  ]]
+  [[ ${finalResult} -eq 0 ]]
 }
 
 @test "Integration Routes Checking" {
@@ -86,7 +86,7 @@ importConfig
             finalResult=${result}
         fi
     done
-  [[ ${finalResult} ==  ]]
+  [[ ${finalResult} -eq 0 ]]
 }
 
 @test "Integration Privileged Checking" {
@@ -100,7 +100,7 @@ importConfig
             finalResult=${result}
         fi
     done
-  [[ ${finalResult} ==  ]]
+  [[ ${finalResult} -eq 0 ]]
 }
 
 @test "Integration Environment Variables Checking" {
@@ -113,6 +113,6 @@ importConfig
             finalResult=${result}
         fi
     done
-    [[ ${finalResult} == 0 ]]
+    [[ ${finalResult} -eq 0 ]]
 }
 
