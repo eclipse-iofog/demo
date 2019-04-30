@@ -8,7 +8,9 @@ services:
     
     # Test Runner, runs our test suite
     test-runner:
-        build: ./test-runner
+        image: iofog/test-runner-develop:latest
         container_name: test-runner
-        depends_on:
-            - iofog-agent
+        volumes:
+            - ./conf:/conf
+volumes:
+  conf:

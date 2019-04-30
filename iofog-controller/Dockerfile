@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:8.16.0-alpine
 
 # Install all our deps
 RUN apk add curl jq python bash

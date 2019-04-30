@@ -1,10 +1,21 @@
-env:
-    - DOCKER_COMPOSE_VERSION=1.23.2
-    
+sudo: required
+
+language: c
+
+dist: xenial
+
 services:
     - docker
     
+# Default Travis version of compose does not suffice
+env:
+  - DOCKER_COMPOSE_VERSION=1.22.0
+
 before_install:
-    
-    # Figure out what version of docker-compose we're running
-    - docker-compose --version
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin 
+
+script:      
+  - ./run.sh
