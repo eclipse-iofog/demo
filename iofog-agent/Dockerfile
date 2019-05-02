@@ -1,26 +1,22 @@
-FROM iofog/ubuntu-16.04-java8 as javaSource
 FROM jpetazzo/dind
 
-# Set up Java
-COPY --from=javaSource /usr/lib/jvm/java-8-oracle /usr/lib/jvm/java-8-oracle
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+RUN apt-get update -qq && \
+  apt-get install -qqy sudo && \
+  apt-get install -qqy curl && \
+  apt-get install -qqy jq
 
-RUN update-alternatives --install /usr/bin/java java /usr/lib/jvm/java-8-oracle/bin/java 1
+# Download JDK
+ADD http://www.edgeworx.io/downloads/jdk/jdk-8u211-64.tar.gz /opt
 
-# Install our deps
-RUN apt-get update -qq && apt-get install -qqy \
-    sudo \
-    curl \
-    jq \
-    software-properties-common
-
-RUN curl -s https://packagecloud.io/install/repositories/computology/apt-backport/script.deb.sh | sudo bash
-RUN sudo apt-get install -y apt=1.2.10
-
-# Install iofog-agent
-RUN curl -s https://packagecloud.io/install/repositories/iofog/iofog-agent/script.deb.sh | sudo bash
-RUN sudo apt-get install iofog-agent
-RUN touch /first_run.tmp
+# Install JDK and our deps
+RUN cd /opt && \
+  tar xzf jdk-8u211-64.tar.gz && \
+  cd /opt/jdk1.8.0_211/ && \
+  update-alternatives --install /usr/bin/java java /opt/jdk1.8.0_211/bin/java 1100 && \
+  rm -R /opt/jdk-8u211-64.tar.gz && \
+  curl -s https://packagecloud.io/install/repositories/iofog/iofog-agent/script.deb.sh | sudo bash && \
+  sudo apt-get install iofog-agent && \
+  touch /first_run.tmp
 
 # Copy our config and start scripts
 COPY start.sh /start.sh

@@ -1,12 +1,10 @@
-FROM node:alpine
+FROM iofog/node-alpine-x86:8.16.0
 
 # Install all our deps
-RUN apk add curl jq python bash
-
+RUN apk add curl jq bash && \
 # Install iofog-controller
-RUN npm i -g iofogcontroller --unsafe-perm
-
-RUN touch /first_run.tmp
+  npm i -g iofogcontroller --unsafe-perm && \
+  touch /first_run.tmp
 
 # Copy in the files we need
 COPY start.sh /start.sh
