@@ -10,6 +10,8 @@ services:
     test-runner:
         image: iofog/test-runner-develop:latest
         container_name: test-runner
+        environment:
+            - LOCAL=1
         volumes:
             - ./conf:/conf
 volumes:
