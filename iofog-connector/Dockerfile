@@ -1,12 +1,10 @@
-FROM iofog/ubuntu-16.04-java8
+FROM iofog/java-ubuntu-x86:8u211
 
-RUN apt-get update -qq
-RUN apt-get install -qqy sudo
-RUN apt-get install -qqy curl
-RUN apt-get install -qqy software-properties-common
-RUN curl -s https://packagecloud.io/install/repositories/iofog/iofog-connector/script.deb.sh | sudo bash
-RUN sudo apt-get install iofog-connector
-RUN touch /first_run.tmp
+RUN apt-get update --fix-missing -qq && \
+  apt-get install -qqy sudo curl && \
+  curl -s https://packagecloud.io/install/repositories/iofog/iofog-connector/script.deb.sh | sudo bash && \
+  sudo apt-get install iofog-connector && \
+  touch /first_run.tmp
 
 COPY . /
 
