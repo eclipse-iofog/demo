@@ -1,0 +1,17 @@
+trigger:
+- master
+- develop
+
+variables:
+  repository: 'focal-freedom-236620/controller'
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+steps:
+
+- script: |
+    echo $(gcp.svcacc) | docker login -u _json_key --password-stdin https://gcr.io
+    sed -i "s|image:.*|image: $(images.runner)|" docker-compose-test.yml
+    ./run.sh
+  displayName: 'Run Tests'
