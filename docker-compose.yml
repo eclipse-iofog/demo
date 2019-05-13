@@ -6,7 +6,8 @@ services:
         container_name: iofog-connector
         ports:
             - "53321:8080"
-        network_mode: "bridge"
+        networks:
+            - iofog
     # ioFog Controller, depends on Connector
     iofog-controller:
         build: ./iofog-controller
@@ -17,9 +18,8 @@ services:
             - "51121:51121"
         environment:
             - NODE_ENV=development
-        network_mode: "bridge"
-        external_links:
-            - iofog-connector
+        networks:
+            - iofog
     # ioFog Agent, depends on Connector and Controller
     iofog-agent:
         build: ./iofog-agent
@@ -32,6 +32,8 @@ services:
         privileged: true
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-        network_mode: "bridge"
-        external_links: 
-            - iofog-controller
+        networks:
+            - iofog
+
+networks:
+    iofog:

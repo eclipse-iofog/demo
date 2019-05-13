@@ -3,14 +3,13 @@ services:
     container_name: test-runner
     environment:
     - LOCAL=1
-    external_links:
-    - iofog-controller
-    - iofog-connector
-    - iofog-agent
     image: iofog/test-runner-develop:latest
-    network_mode: bridge
+    networks:
+    - iofog
     volumes:
     - ./conf:/conf
 version: '3'
 volumes:
   conf: null
+networks:
+  iofog: null
