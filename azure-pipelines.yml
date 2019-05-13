@@ -10,6 +10,12 @@ pool:
 
 steps:
 
+- task: DockerInstaller@0
+  displayName: Docker Installer
+  inputs:
+    dockerVersion: 18.09.2
+    releaseType: stable
+
 - script: |
     echo $(gcp.svcacc) | docker login -u _json_key --password-stdin https://gcr.io
   displayName: 'Docker connect to Registry'
