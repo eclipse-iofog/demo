@@ -1,0 +1,37 @@
+trigger:
+- master
+- develop
+- blank-environment
+- demo-environment
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+steps:
+
+- task: DockerInstaller@0
+  displayName: Docker Installer
+  inputs:
+    dockerVersion: 18.09.2
+    releaseType: stable
+
+- script: |
+    echo $(gcp.svcacc) | docker login -u _json_key --password-stdin https://gcr.io
+  displayName: 'Docker connect to Registry'
+
+- script: |
+    sed -i "s|image:.*|image: $(images.runner)|" docker-compose-test.yml
+    cat docker-compose-test.yml
+  displayName: 'Configure Test Runner image'
+
+- script: |
+    ./start.sh
+  displayName: 'Start Connector, Controller, and Agent'
+
+- script: |
+    ./test.sh
+  displayName: 'Run Tests'
+
+- script: |
+    ./stop.sh
+  displayName: 'Stop Connector, Controller, and Agent'
