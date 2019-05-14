@@ -1,47 +1,56 @@
 version: "3"
 services:
-  iofog-connector:
-    build: ./iofog-connector
-    ports:
-      - "53321:8080"
-    container_name: iofog-connector
-    network_mode: bridge
-  iofog-controller:
-    build: ./iofog-controller
-    depends_on:
-      - iofog-connector
-    environment:
-      - NODE_ENV=production
-    ports:
-      - "54421:54421"
-    links:
-      - iofog-connector
-    container_name: iofog-controller
-    network_mode: bridge
-  iofog-agent-1:
-    build: ./iofog-agent
-    depends_on:
-      - iofog-controller
-    environment:
-      - NODE_NUMBER=1
-    links:
-      - iofog-controller:iofog-controller
-    privileged: true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    container_name: iofog-agent-1
-    network_mode: bridge
-  iofog-agent-2:
-    build: ./iofog-agent
-    depends_on:
-      - iofog-controller
-      - iofog-agent-1
-    environment:
-      - NODE_NUMBER=2
-    links:
-      - iofog-controller:iofog-controller
-    privileged: true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    container_name: iofog-agent-2
-    network_mode: bridge
+
+    iofog-connector:
+        build: ./iofog-connector
+        container_name: iofog-connector
+        ports:
+            - "53321:8080"
+        networks:
+            - iofog
+
+    iofog-controller:
+        build: ./iofog-controller
+        container_name: iofog-controller
+        depends_on:
+            - iofog-connector
+        ports:
+            - "51121:51121"
+        environment:
+            - NODE_ENV=development
+        networks:
+            - iofog
+
+    iofog-agent-1:
+        build: ./iofog-agent
+        depends_on:
+          - iofog-controller
+        environment:
+          - NODE_NUMBER=1
+        privileged: true
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+        container_name: iofog-agent-1
+        ports:
+            - "8081:22"
+        networks:
+            - iofog
+
+    iofog-agent-2:
+        build: ./iofog-agent
+        depends_on:
+          - iofog-controller
+          - iofog-agent-1
+        environment:
+          - NODE_NUMBER=2
+        privileged: true
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+        container_name: iofog-agent-2
+        ports:
+            - "8082:22"
+        networks:
+            - iofog
+
+networks:
+    iofog:
