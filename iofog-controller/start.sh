@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-CONTROLLER_HOST="http://localhost:54421/api/v3"
+CONTROLLER_HOST="http://localhost:51121/api/v3"
 
 iofog-controller start
 if [ -f /first_run.tmp ]; then

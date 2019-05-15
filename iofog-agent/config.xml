@@ -2,7 +2,7 @@
 <config>
 	<access_token/>
 	
-	<controller_url>http://iofog-controller:54421/api/v3/</controller_url>
+	<controller_url>http://iofog-controller:51121/api/v3/</controller_url>
 
 	<controller_cert>/etc/iofog-agent/cert.crt</controller_cert>
 	
