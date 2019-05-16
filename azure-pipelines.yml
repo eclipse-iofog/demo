@@ -35,3 +35,8 @@ steps:
 - script: |
     ./stop.sh
   displayName: 'Stop Connector, Controller, and Agent'
+
+- script: |
+    docker exec iofog-agent cat /var/log/agent.out.log
+  displayName: 'Test debug output'
+  condition: failed()
