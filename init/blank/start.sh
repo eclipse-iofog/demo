@@ -15,9 +15,9 @@ function wait() {
 }
 
 echo 'Waiting for Agent'
-wait "docker exec iofog-agent iofog-agent status" "ioFog Agent is not running."
-docker exec iofog-agent iofog-agent config -idc off
-docker exec iofog-agent iofog-agent config -a $CONTROLLER_HOST
+wait "docker exec iofog-agent-1 iofog-agent status" "ioFog Agent is not running."
+docker exec iofog-agent-1 iofog-agent config -idc off
+docker exec iofog-agent-1 iofog-agent config -a $CONTROLLER_HOST
 
 echo 'Waiting for Controller'
 wait "curl --request GET --url $CONTROLLER_HOST/status" "Failed"
@@ -57,4 +57,4 @@ provisioning=$(curl --request GET \
     --header 'Content-Type: application/json')
 key=$(echo $provisioning | jq -r .key)
 
-docker exec iofog-agent iofog-agent provision $key
+docker exec iofog-agent-1 iofog-agent provision $key
