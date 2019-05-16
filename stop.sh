@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
 
-set -e
-
-docker-compose down -v
+docker-compose down
+docker-compose -f docker-compose-init.yml down

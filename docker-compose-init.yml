@@ -1,0 +1,13 @@
+version: "3"
+services:
+    iofog-init:
+        build: ./init/blank
+        container_name: iofog-init
+        privileged: true
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            - iofog
+
+networks:
+  iofog:
