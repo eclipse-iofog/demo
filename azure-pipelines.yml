@@ -25,7 +25,7 @@ steps:
   displayName: 'Configure Test Runner image'
 
 - script: |
-    ./start.sh
+    ./start.sh demo
   displayName: 'Start Connector, Controller, and Agent'
 
 - script: |
@@ -37,6 +37,7 @@ steps:
   displayName: 'Stop Connector, Controller, and Agent'
 
 - script: |
-    docker exec iofog-agent cat /var/log/agent.out.log
+    docker exec iofog-agent-1 cat /var/log/agent.out.log
+    docker exec iofog-agent-2 cat /var/log/agent.out.log
   displayName: 'Test debug output'
   condition: failed()

@@ -22,7 +22,8 @@ function login() {
     login=$(curl --request POST \
         --url $CONTROLLER_HOST/user/login \
         --header 'Content-Type: application/json' \
-        --data '{"email":"user@domain.com","password":"#Bugs4Fun"}')
+        --data '{"email":"user@domain.com","password":"#Bugs4Fun"}' \
+        2> /dev/null)
     echo "$login"
     token=$(echo $login | jq -r .accessToken)
 }
@@ -34,8 +35,9 @@ function provision() {
         item=$(curl --request GET \
             --url $CONTROLLER_HOST/iofog-list \
             --header "Authorization: $token" \
-            --header 'Content-Type: application/json')
-        echo "$item"
+            --header 'Content-Type: application/json' \
+            2> /dev/null)
+        #echo "$item"
         uuid=$(echo $item | jq -r '.fogs[] | select(.name == "Agent '"$AGENT"'") | .uuid')
 
         if [ ! -z "$uuid" ]; then
@@ -49,7 +51,8 @@ function provision() {
     provisioning=$(curl --request GET \
         --url $CONTROLLER_HOST/iofog/$uuid/provisioning-key \
         --header "Authorization: $token" \
-        --header 'Content-Type: application/json')
+        --header 'Content-Type: application/json' \
+        2> /dev/null)
     echo "$provisioning"
     key=$(echo $provisioning | jq -r .key)
 
@@ -57,7 +60,7 @@ function provision() {
 }
 
 echo 'Waiting for Controller'
-wait "curl --request GET --url $CONTROLLER_HOST/status" "Failed"
+wait "curl --request GET --url $CONTROLLER_HOST/status 2> /dev/null" "Failed"
 
 login
 
