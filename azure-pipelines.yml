@@ -16,6 +16,10 @@ steps:
     releaseType: stable
 
 - script: |
+      ls -l
+  displayName: 'Listing checked out content'
+  
+- script: |
     echo $(gcp.svcacc) | docker login -u _json_key --password-stdin https://gcr.io
   displayName: 'Docker connect to Registry'
 
