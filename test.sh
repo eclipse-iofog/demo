@@ -2,11 +2,14 @@
 
 set -e
 
+AGENT_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-agent)
+CONTROLLER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-controller)
+CONNECTOR_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-connector)
+
 # Output the config for our Test suite config
-echo 'iofog-connector:8080' > conf/connector.conf
-echo 'iofog-controller:51121' > conf/controller.conf
-echo 'root@iofog-agent-1' > conf/agents.conf
-echo 'root@iofog-agent-2' >> conf/agents.conf
+echo "${CONNECTOR_IP}:8080" > conf/connector.conf
+echo "${CONTROLLER_IP}:51121" > conf/controller.conf
+echo "root@${AGENT_IP}" > conf/agents.conf
 
 docker-compose -f docker-compose-test.yml pull test-runner
 docker-compose -f docker-compose-test.yml up \

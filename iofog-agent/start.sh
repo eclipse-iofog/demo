@@ -31,7 +31,7 @@ function provision() {
             --url $CONTROLLER_HOST/iofog-list \
             --header "Authorization: $token" \
             --header 'Content-Type: application/json')
-        uuid=$(echo $item | jq -r '.fogs[] | select(.name == "Agent '"$NODE_NUMBER"'") | .uuid')
+        uuid=$(echo $item | jq -r '.fogs[] | select(.name == "Agent") | .uuid')
 
         if [ ! -z "$uuid" ]; then
             echo "$item"
