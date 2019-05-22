@@ -1,15 +1,16 @@
-services:
-  test-runner:
-    container_name: test-runner
-    environment:
-    - LOCAL=1
-    image: iofog/test-runner:latest
-    networks:
-    - iofog
-    volumes:
-    - ./conf:/conf
 version: '3'
+services:
+    # Test Harness image
+    test-runner:
+        container_name: test-runner
+        environment:
+            - LOCAL=1
+        image: iofog/test-runner:latest
+        networks:
+            - iofog
+        volumes:
+            - ./conf:/conf
 volumes:
-  conf: null
+    conf: null
 networks:
-  iofog: null
+    iofog: null
