@@ -7,7 +7,7 @@
 set -e
 
 # Import our helper functions
-. utils.sh
+. ./utils.sh
 
 prettyHeader "Starting ioFog Demo environment"
 

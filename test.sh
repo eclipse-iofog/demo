@@ -6,7 +6,7 @@
 set -e
 
 # Import our helper functions
-. utils.sh
+. ./utils.sh
 
 prettyHeader "Running Test Runner Suite"
 

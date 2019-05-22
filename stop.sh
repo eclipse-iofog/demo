@@ -6,7 +6,7 @@
 set -e
 
 # Import our helper functions
-. utils.sh
+. ./utils.sh
 
 prettyHeader "Spinning down iofog Demo environment"
 docker-compose down -v
