@@ -53,15 +53,8 @@ if [ -f /first_run.tmp ]; then
         --url $CONTROLLER_HOST/iofog \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name": "Agent 1","fogType": 1}')
-    uuid1=$(echo $item | jq -r .uuid)
-
-    item=$(curl --request POST \
-        --url $CONTROLLER_HOST/iofog \
-        --header "Authorization: $token" \
-        --header 'Content-Type: application/json' \
-        --data '{"name": "Agent 2","fogType": 1}')
-    uuid2=$(echo $item | jq -r .uuid)
+        --data '{"name": "Agent","fogType": 1}')
+    uuid=$(echo $item | jq -r .uuid)
 
     item=$(curl --request POST \
         --url $CONTROLLER_HOST/flow \
@@ -74,15 +67,14 @@ if [ -f /first_run.tmp ]; then
         --url $CONTROLLER_HOST/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"API","config":"{}","catalogItemId":'"$apiId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid2"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[{"internal":80,"external":10101,"publicMode":false}],"routes":[]}')
+        --data '{"name":"API","config":"{}","catalogItemId":'"$apiId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[{"internal":80,"external":10101,"publicMode":false}],"routes":[]}')
     apiUUID=$(echo $item | jq -r .uuid)
 
     item=$(curl --request POST \
         --url $CONTROLLER_HOST/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"Sensors","config":"{}","catalogItemId":'"$sensorsId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid1"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[],"routes":[]}')
-#        --data '{"name":"Sensors","config":"{}","catalogItemId":'"$sensorsId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid1"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[],"routes":["'"$apiUUID"'"]}')
+        --data '{"name":"Sensors","config":"{}","catalogItemId":'"$sensorsId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[],"routes":["'"$apiUUID"'"]}')
     sensorsUUID=$(echo $item | jq -r .uuid)
     item=$(curl -X POST \
         --url "$CONTROLLER_HOST/microservices/$sensorsUUID/routes/$apiUUID" \
@@ -93,7 +85,7 @@ if [ -f /first_run.tmp ]; then
         --url $CONTROLLER_HOST/microservices \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name":"freeboard","config":"{}","catalogItemId":'"$freeboardId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid2"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[{"internal":80,"external":10102,"publicMode":false}],"routes":[]}')
+        --data '{"name":"freeboard","config":"{}","catalogItemId":'"$freeboardId"',"flowId":'"$flowId"',"iofogUuid":"'"$uuid"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[{"internal":80,"external":10102,"publicMode":false}],"routes":[]}')
     freeboardUUID=$(echo $item | jq -r .uuid)
 
     rm /first_run.tmp
