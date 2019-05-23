@@ -21,9 +21,9 @@ services:
         networks:
             - iofog
     # ioFog Agent, depends on Connector and Controller
-    iofog-agent-1:
+    iofog-agent:
         build: ./iofog-agent
-        container_name: iofog-agent-1
+        container_name: iofog-agent
         depends_on:
             - iofog-controller
         ports:
@@ -35,16 +35,5 @@ services:
         networks:
             - iofog
 
-    iofog-agent-2:
-        build: ./iofog-agent
-        container_name: iofog-agent-2
-        ports:
-            - "54322:54321"
-            - "8082:22"
-        privileged: true
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-        networks:
-            - iofog
 networks:
     iofog:

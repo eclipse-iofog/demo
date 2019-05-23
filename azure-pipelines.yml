@@ -1,7 +1,6 @@
 trigger:
 - master
 - develop
-- blank-environment
 - demo-environment
 
 pool:
@@ -25,7 +24,7 @@ steps:
   displayName: 'Configure Test Runner image'
 
 - script: |
-    ./start.sh demo
+    ./start.sh
   displayName: 'Start Connector, Controller, and Agent'
 
 - script: |
