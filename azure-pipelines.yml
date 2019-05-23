@@ -1,7 +1,6 @@
 trigger:
 - master
 - develop
-- demo-environment
 
 pool:
   vmImage: 'ubuntu-16.04'
@@ -36,7 +35,6 @@ steps:
   displayName: 'Stop Connector, Controller, and Agent'
 
 - script: |
-    docker exec iofog-agent-1 cat /var/log/agent.out.log
-    docker exec iofog-agent-2 cat /var/log/agent.out.log
+    docker exec iofog-agent cat /var/log/agent.out.log
   displayName: 'Test debug output'
   condition: failed()

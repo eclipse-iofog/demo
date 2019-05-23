@@ -32,9 +32,10 @@ echoInfo "Building and Starting Docker Compose environment"
 docker-compose -f docker-compose.yml up --build --detach
 
 # Initialize ioFog services
-sed "s|/init/.*|/init/$ENV|g" ./docker-compose-init.yml > /tmp/docker-compose-init.yml
-cp /tmp/docker-compose-init.yml .
-docker-compose -f docker-compose-init.yml up --build
+# echoInfo "Initializing ioFog Services"
+# sed "s|/init/.*|/init/$ENV|g" ./docker-compose-init.yml > /tmp/docker-compose-init.yml
+# cp /tmp/docker-compose-init.yml .
+# docker-compose -f docker-compose-init.yml up --build
 
 # Display the running environment
 docker ps

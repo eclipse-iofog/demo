@@ -1,7 +1,7 @@
 version: "3"
 services:
     iofog-init:
-        build: ./init/demo
+        build: ./init/blank
         container_name: iofog-init
         privileged: true
         volumes:

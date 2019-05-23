@@ -25,6 +25,7 @@ RUN sudo apt-get install iofog-agent
 RUN touch /first_run.tmp
 
 # Copy our config and start scripts
+COPY start.sh /start.sh
 COPY config.xml /etc/iofog-agent/config.xml
 
 # SSH Magic

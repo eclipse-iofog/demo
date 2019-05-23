@@ -6,11 +6,8 @@ services:
         environment:
             - LOCAL=1
         image: iofog/test-runner:latest
-        networks:
-            - iofog
+        network_mode: bridge
         volumes:
             - ./conf:/conf
 volumes:
     conf: null
-networks:
-    iofog: null
