@@ -1,41 +1,92 @@
 #!/bin/bash
 
-set -e
+set -o errexit -o pipefail -o noclobber -o nounset
+cd "$(dirname "$0")"
 
 # Import our helper functions
 . ./utils.sh
 
-prettyHeader "Starting ioFog Demo environment"
+printHelp() {
+	echo "Usage:   ./start.sh [environment]"
+	echo "Starts ioFog environments and optionally sets up demo and tutorial environment"
+	echo ""
+	echo "Arguments:"
+	echo "    -h, --help        print this help / usage"
+	echo "    [environment]     setup demo application, optional, default: iofog"
+	echo "                      supported values: iofog, tutorial"
+}
 
-ENV='blank'
-if [ ! -z "$1" ]; then
-    if [[ "$1" == *help* ]]; then
-        echo 'Usage:                ./start.sh [Environment]'
-        echo 'Arguments:            Environment - Compose environment to start. Optional. Defalut is "demo"'
-        exit 0
-    fi
-    ENV="$1"
+! getopt -T
+if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
+    echoError 'Your getopts version is insufficient!'
+    exit 2
 fi
 
-echo "Starting up $ENV environment"
+! OPTIONS=$(getopt --options="h" --longoptions="help" --name "$0" -- $@)
+if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+    printHelp
+    exit 1
+fi
+eval set -- "$OPTIONS"
 
-# Clean up any artifacts from a previous run
-rm conf/id_ecdsa* || true
+ENVIRONMENT=''
+while [[ "$#" -ge 1 ]]; do
+    case "$1" in
+        -h|--help)
+            printHelp
+            exit 0
+            ;;
+        --)
+            shift
+            ;;
+        *)
+            if [[ -n "${ENVIRONMENT}" ]]; then
+                echoError "Cannot specify more than one environment!"
+                printHelp
+                exit1
+            fi
+            ENVIRONMENT=$1
+            shift
+            ;;
+    esac
+done
+ENVIRONMENT=${ENVIRONMENT:="iofog"} # by default, setup only the ioFog stack
+
+prettyHeader "Starting ioFog Demo (\"${ENVIRONMENT}\" environment)..."
+
+if [[ "${ENVIRONMENT}" != "iofog" ]]; then
+    COMPOSE_SERVICES_FILE="docker-compose-${ENVIRONMENT}.yml"
+    COMPOSE_INIT_FILE="docker-compose-${ENVIRONMENT}-init.yml"
+    if [[ ! -f "${COMPOSE_SERVICES_FILE}" ]] || [[ ! -f "${COMPOSE_INIT_FILE}" ]]; then
+        echoError "Environment configuration for \"${ENVIRONMENT}\" does not exist!"
+        exit 2
+    fi
+fi
 
 # Create a new ssh key and copy it into Agent
-echoInfo "Adding new ssh key pair to Agent"
-ssh-keygen -t ecdsa -N "" -f conf/id_ecdsa -q
-cp conf/id_ecdsa.pub iofog-agent
+echoInfo "Adding new ssh key pair to Agent..."
+rm -f init/iofog/id_ecdsa*
+ssh-keygen -t ecdsa -N "" -f init/iofog/id_ecdsa -q
+cp init/iofog/id_ecdsa.pub iofog-agent
 
-# Spin up our Docker compose environment
-echoInfo "Building and Starting Docker Compose environment"
-docker-compose -f docker-compose.yml up --build --detach
+# Spin up contianers for iofog environment
+echoInfo "Spinning up containers for ioFog environment..."
+echo docker-compose -f "docker-compose-iofog.yml" up --build --detach
 
-# Initialize ioFog services
-# echoInfo "Initializing ioFog Services"
-# sed "s|/init/.*|/init/$ENV|g" ./docker-compose-init.yml > /tmp/docker-compose-init.yml
-# cp /tmp/docker-compose-init.yml .
-# docker-compose -f docker-compose-init.yml up --build
+# Initialize iofog environment
+echoInfo "Initializing ioFog environment..."
+echo docker-compose -f "docker-compose-iofog-init.yml" run --build
+
+# Optionally add another environment
+if [[ "${ENVIRONMENT}" != "iofog" ]]; then
+    # Spin up contianers for another environment
+    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
+    echo docker-compose -f "${COMPOSE_SERVICES_FILE}" up --build --detach
+
+    # Initialize iofog environment
+    echoInfo "Initializing ${ENVIRONMENT} environment..."
+    echo docker-compose -f "${COMPOSE_INIT_FILE}" run --build
+fi
 
 # Display the running environment
 docker ps

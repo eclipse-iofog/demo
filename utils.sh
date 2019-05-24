@@ -14,7 +14,7 @@ export THIS_SCRIPT
 checkForDebug() {
 
 	# Allow anyone to set a DEBUG environment variable for extra output
-	if env | grep -q "DEBUG"; then
+	if env | grep -q "^DEBUG=" ; then
 		echoNotify " :: DEBUG is set                                  ::"
 		set -x
 	fi
@@ -102,7 +102,7 @@ RED="\\033[38;5;1m"
 GREEN="\\033[38;5;28m"
 
 # Need this as bash and sh require different args for the echo command
-if [ "${ISBASH}" ]; then
+if [[ "${BASH}" ]]; then
 	PRINTARGS="-e"
 fi
 
