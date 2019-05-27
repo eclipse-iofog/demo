@@ -82,8 +82,23 @@ ssh-keygen -t ecdsa -N "" -f services/iofog/iofog-agent/id_ecdsa -q
 
 # Start ioFog stack
 startEnvironment "iofog"
+docker logs -f iofog-init # wait for the ioFog stack initialization
+RET=$(docker wait iofog-init)
+if [[ "$RET" != "0" ]]; then
+    echo "Failed to initialize ioFog stack!"
+    exit 3
+fi
+
 # Optionally start another environment
-if [[ "${ENVIRONMENT}" != "iofog" ]]; then startEnvironment "${ENVIRONMENT}"; fi
+if [[ "${ENVIRONMENT}" != "iofog" ]]; then
+    startEnvironment "${ENVIRONMENT}";
+    docker logs -f "${ENVIRONMENT}-init" # wait for the ioFog stack initialization
+    RET=$(docker wait "${ENVIRONMENT}-init")
+    if [[ "$RET" != "0" ]]; then
+        echo "Failed to initialize ${ENVIRONMENT} environment!"
+        exit 3
+    fi
+fi
 
 # Display the running environment
 docker ps

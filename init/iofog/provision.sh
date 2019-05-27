@@ -6,7 +6,7 @@ cd "$(dirname "$0")"
 function waitForController() {
     while true; do
         STATUS=$(curl --request GET --url "${CONTROLLER_HOST}/status" 2>/dev/null | jq -r ".status")
-        [[ $STATUS == "online" ]] && break || echo "Waiting for Controller..."
+        [[ "${STATUS}" == "online" ]] && break || echo "Waiting for Controller..."
         sleep 2
     done
 }
@@ -14,7 +14,7 @@ function waitForController() {
 function waitForAgent() {
     while true; do
         STATUS=$(docker exec iofog-agent iofog-agent status | awk -F': ' '/ioFog daemon/{print $2}')
-        [[ $STATUS == "RUNNING" ]] && break || echo "Waiting for Agent..."
+        [[ "${STATUS}" == "RUNNING" ]] && break || echo "Waiting for Agent..."
         sleep 2
     done
 }
@@ -24,7 +24,7 @@ function waitForConnector() {
         STATUS=$(curl --request POST --url "${CONNECTOR_HOST}/status" \
                       --header 'Content-Type: application/x-www-form-urlencoded' --data mappingid=all 2>/dev/null \
                  | jq -r '.status')
-        [[ $STATUS == "running" ]] && break || echo "Waiting for Connector..."
+        [[ "${STATUS}" == "running" ]] && break || echo "Waiting for Connector..."
         sleep 2
     done
 }
@@ -37,7 +37,7 @@ function createUser() {
                      2>/dev/null)
     local RET_MSG=$(echo $RET | jq -r '.message')
     local RET_UID=$(echo $RET | jq -r '.userId')
-    [[ "${RET_MSG}" == "null" ]] && echo RET_UID || echo RET_MSG
+    [[ "${RET_MSG}" == "null" ]] && echo "${RET_UID}" || echo "${RET_MSG}"
 }
 
 function login() {

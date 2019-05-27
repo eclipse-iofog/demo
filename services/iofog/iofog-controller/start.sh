@@ -9,18 +9,18 @@ if [ -f /first_run.tmp ]; then
 #    connector_ip=$(getent hosts iofog-connector | awk '{ print $1 }')
 #    iofog-controller connector add -n iofog-connector -d $connector_ip -i $connector_ip -H
 
-    while true; do
-        item=$(curl --request POST \
-            --url http://iofog-connector:8080/api/v2/status \
-            --header 'Content-Type: application/x-www-form-urlencoded' \
-            --data mappingid=all)
-        status=$(echo $item | jq -r .status)
-
-        if [ "$status" == "running" ]; then
-            break
-        fi
-        sleep .5
-    done
+#    while true; do
+#        item=$(curl --request POST \
+#            --url http://iofog-connector:8080/api/v2/status \
+#            --header 'Content-Type: application/x-www-form-urlencoded' \
+#            --data mappingid=all)
+#        status=$(echo $item | jq -r .status)
+#
+#        if [ "$status" == "running" ]; then
+#            break
+#        fi
+#        sleep .5
+#    done
 
 #    login=$(curl --request POST \
 #        --url $CONTROLLER_HOST/user/login \
