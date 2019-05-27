@@ -105,8 +105,9 @@ Alternatively, if you want to tear down all the applications and the ioFog stack
 
 
 # Structure Of This Repository
-
+```text
 * services                  # Service Dockerfiles and customization files
+                            # TODO this is to be removed once iofog-* images are pulled directly
     - iofog
         + iofog-agent       # part of iofog stack
             * Dockerfile
@@ -127,15 +128,16 @@ Alternatively, if you want to tear down all the applications and the ioFog stack
         + ...
     - another-demo-2
         + ...
-* init                  # iofog-controller setup containers and scritps
-    - iofog
+* init                  
+    - iofog             # ioFog initialization container and scripts
         + Dockerfile
+        + init.sh
     - tutorial          # sets up everything for the environment
         + Dockerfile
         + init.sh       # anything that calls the controller API
     - another-demo
         + ...
-* test                  # test contianers for all scenarios
+* test                  # test containers for all scenarios
     - iofog
         + Dockerfile
     - tutorial
@@ -150,3 +152,4 @@ Alternatively, if you want to tear down all the applications and the ioFog stack
 * docker-compose-another-demo.yml
 * docker-compose-another-demo-test.yml
 * azure-pipelines.yml
+```

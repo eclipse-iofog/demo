@@ -1,12 +1,7 @@
-FROM jpetazzo/dind
+FROM alpine:3.8
 
-RUN apt-get update -qq && apt-get install -qqy \
-    sudo \
-    curl \
-    software-properties-common \
-    jq
+RUN apk add --no-cache curl jq
 
-ADD ./catalog.sh /
-ADD ./provision.sh /
+ADD ./start.sh /
 
-CMD ["sh", "-c", "./catalog.sh && ./provision.sh"]
+CMD ["sh", "-c", "/provision.sh"]

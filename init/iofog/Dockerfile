@@ -1,11 +1,7 @@
-FROM jpetazzo/dind
+FROM docker:dind
 
-RUN apt-get update -qq && apt-get install -qqy \
-    sudo \
-    curl \
-    software-properties-common \
-    jq
+RUN apk add --no-cache curl jq
 
-ADD ./start.sh /
+ADD ./provision.sh /
 
-CMD ["/start.sh"]
+CMD ["sh", "-c", "/provision.sh; tail -f /dev/null"]

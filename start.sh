@@ -16,9 +16,27 @@ printHelp() {
 	echo "                      supported values: iofog, tutorial"
 }
 
+checkComposeFile() {
+    local ENVIRONMENT="$1"
+    local COMPOSE_FILE="docker-compose-${ENVIRONMENT}.yml"
+    if [[ ! -f "${COMPOSE_FILE}" ]]; then
+        echoError "Environment configuration for \"${ENVIRONMENT}\" does not exist!"
+        exit 2
+    fi
+}
+
+startEnvironment() {
+    local ENVIRONMENT="$1"
+    local COMPOSE_FILE="docker-compose-${ENVIRONMENT}.yml"
+
+    # Spin up contianers for another environment
+    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
+    docker-compose -f "${COMPOSE_FILE}" up --detach
+}
+
 ! getopt -T
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-    echoError 'Your getopts version is insufficient!'
+    echoError 'Your getopt version is insufficient!'
     exit 2
 fi
 
@@ -54,39 +72,18 @@ ENVIRONMENT=${ENVIRONMENT:="iofog"} # by default, setup only the ioFog stack
 
 prettyHeader "Starting ioFog Demo (\"${ENVIRONMENT}\" environment)..."
 
-if [[ "${ENVIRONMENT}" != "iofog" ]]; then
-    COMPOSE_SERVICES_FILE="docker-compose-${ENVIRONMENT}.yml"
-    COMPOSE_INIT_FILE="docker-compose-${ENVIRONMENT}-init.yml"
-    if [[ ! -f "${COMPOSE_SERVICES_FILE}" ]] || [[ ! -f "${COMPOSE_INIT_FILE}" ]]; then
-        echoError "Environment configuration for \"${ENVIRONMENT}\" does not exist!"
-        exit 2
-    fi
-fi
+checkComposeFile "iofog"
+if [[ "${ENVIRONMENT}" != "iofog" ]]; then checkComposeFile "${ENVIRONMENT}"; fi
 
-# Create a new ssh key and copy it into Agent
+# Create a new ssh key
 echoInfo "Adding new ssh key pair to Agent..."
-rm -f init/iofog/id_ecdsa*
-ssh-keygen -t ecdsa -N "" -f init/iofog/id_ecdsa -q
-cp init/iofog/id_ecdsa.pub iofog-agent
+rm -f services/iofog/iofog-agent/id_ecdsa*
+ssh-keygen -t ecdsa -N "" -f services/iofog/iofog-agent/id_ecdsa -q
 
-# Spin up contianers for iofog environment
-echoInfo "Spinning up containers for ioFog environment..."
-echo docker-compose -f "docker-compose-iofog.yml" up --build --detach
-
-# Initialize iofog environment
-echoInfo "Initializing ioFog environment..."
-echo docker-compose -f "docker-compose-iofog-init.yml" run --build
-
-# Optionally add another environment
-if [[ "${ENVIRONMENT}" != "iofog" ]]; then
-    # Spin up contianers for another environment
-    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
-    echo docker-compose -f "${COMPOSE_SERVICES_FILE}" up --build --detach
-
-    # Initialize iofog environment
-    echoInfo "Initializing ${ENVIRONMENT} environment..."
-    echo docker-compose -f "${COMPOSE_INIT_FILE}" run --build
-fi
+# Start ioFog stack
+startEnvironment "iofog"
+# Optionally start another environment
+if [[ "${ENVIRONMENT}" != "iofog" ]]; then startEnvironment "${ENVIRONMENT}"; fi
 
 # Display the running environment
 docker ps
