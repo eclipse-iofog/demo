@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 
-CONTROLLER_HOST="http://localhost:51121/api/v3"
+#CONTROLLER_HOST="http://localhost:51121/api/v3"
 
 iofog-controller start
 if [ -f /first_run.tmp ]; then
-    iofog-controller user add -f John -l Doe -e user@domain.com -p "#Bugs4Fun"
+#    iofog-controller user add -f John -l Doe -e user@domain.com -p "#Bugs4Fun"
 
-    connector_ip=$(getent hosts iofog-connector | awk '{ print $1 }')
-    iofog-controller connector add -n iofog-connector -d $connector_ip -i $connector_ip -H
+#    connector_ip=$(getent hosts iofog-connector | awk '{ print $1 }')
+#    iofog-controller connector add -n iofog-connector -d $connector_ip -i $connector_ip -H
 
     while true; do
         item=$(curl --request POST \

@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
-set -o errexit -o pipefail -o noclobber -o nounset
+set -o errexit -o noclobber -o nounset
 cd "$(dirname "$0")"
 
 function waitForController() {
     while true; do
         STATUS=$(curl --request GET --url "${CONTROLLER_HOST}/status" 2>/dev/null | jq -r ".status")
-        [[ $STATUS == "online" ]] && break || echo "Waiting for Controller... STATUS: ${STATUS}"
+        [[ $STATUS == "online" ]] && break || echo "Waiting for Controller..."
         sleep 2
     done
 }
@@ -14,9 +14,30 @@ function waitForController() {
 function waitForAgent() {
     while true; do
         STATUS=$(docker exec iofog-agent iofog-agent status | awk -F': ' '/ioFog daemon/{print $2}')
-        [[ $STATUS == "RUNNING" ]] && break || echo "Waiting for Agent... STATUS: ${STATUS}"
+        [[ $STATUS == "RUNNING" ]] && break || echo "Waiting for Agent..."
         sleep 2
     done
+}
+
+function waitForConnector() {
+    while true; do
+        STATUS=$(curl --request POST --url "${CONNECTOR_HOST}/status" \
+                      --header 'Content-Type: application/x-www-form-urlencoded' --data mappingid=all 2>/dev/null \
+                 | jq -r '.status')
+        [[ $STATUS == "running" ]] && break || echo "Waiting for Connector..."
+        sleep 2
+    done
+}
+
+function createUser() {
+    echo -n "Creating user John Doe... "
+    local RET=$(curl --request POST --url "${CONTROLLER_HOST}/user/signup" \
+                     --header 'Content-Type: application/json' \
+                     --data '{"email":"user@domain.com","firstName":"John","lastName":"Doe","password":"#Bugs4Fun"}' \
+                     2>/dev/null)
+    local RET_MSG=$(echo $RET | jq -r '.message')
+    local RET_UID=$(echo $RET | jq -r '.userId')
+    [[ "${RET_MSG}" == "null" ]] && echo RET_UID || echo RET_MSG
 }
 
 function login() {
@@ -34,8 +55,7 @@ function createDefaultFog() {
                               --header "Authorization: ${TOKEN}" \
                               --header 'Content-Type: application/json' 2>/dev/null \
                          | jq -r ".fogs[] | select(.name == \"${DEFAULT_FOG}\") | .uuid")
-    for FOG_UUID in ${DEFAULT_FOGS}
-    do
+    for FOG_UUID in ${DEFAULT_FOGS}; do
         echo "Deleting pre-existing default fog: ${FOG_UUID}..."
         curl --request DELETE --url "${CONTROLLER_HOST}/iofog/${FOG_UUID}" \
              --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' 2>/dev/null
@@ -64,10 +84,17 @@ function createDefaultFog() {
     echo "${FOG_UUID}"
 }
 
-function configureAgnet() {
+function configureAgent() {
     echo "Configuring Agent..."
     docker exec iofog-agent iofog-agent config -idc off
     docker exec iofog-agent iofog-agent config -a "${CONTROLLER_HOST}"
+}
+
+function configureController() {
+    echo "Configuring Controller..."
+    CONNECTOR_IP=$(getent hosts iofog-connector | awk '{ print $1 }')
+    docker exec iofog-controller \
+        iofog-controller connector add -n iofog-connector -d "${CONNECTOR_IP}" -i "${CONNECTOR_IP}" -H
 }
 
 function provisionAgent() {
@@ -97,14 +124,21 @@ echo "Initializing ioFog stack. This may take a minute or two."
 
 docker --version # Check if docker is available. Needs docker socket mapped in order to talk to the Agent
 CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
+CONNECTOR_HOST="http://iofog-connector:8080/api/v2"
 DEFAULT_FOG="Default Fog"
 DEFAULT_FLOW="Default Flow"
 
+# TODO remove the loop in the dockerfile
+# TODO cleanup all other provisioning scripts
+
+waitForConnector
 waitForController
 waitForAgent
+configureController
+createUser
 login
 createDefaultFog
-configureAgnet
+configureAgent
 provisionAgent
 createDefaultFlow
 

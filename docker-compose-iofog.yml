@@ -44,4 +44,5 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         links:
             - iofog-controller:iofog-controller
+            - iofog-connector:iofog-connector
         network_mode: bridge
