@@ -14,15 +14,6 @@ printHelp() {
 	echo "    -h, --help        print this help / usage"
 }
 
-stopEnvironment() {
-    local ENVIRONMENT="$1"
-    local COMPOSE_FILE="docker-compose-${ENVIRONMENT}.yml"
-
-    # Spin up contianers for another environment
-    echoInfo "Stopping containers from ${ENVIRONMENT} environment..."
-    docker-compose -f "${COMPOSE_FILE}" down -v
-}
-
 ! getopt -T
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
     echoError 'Your getopt version is insufficient!'
@@ -52,10 +43,8 @@ done
 
 prettyHeader "Stopping ioFog Demo..."
 
-# Stop tutorial application
-#stopEnvironment "tutorial"
-
 # Stop ioFog stack
-stopEnvironment "iofog"
+echoInfo "Stopping all containers..."
+docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-tutorial.yml" down -v
 
 echoNotify "ioFog Demo is stopped"

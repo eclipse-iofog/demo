@@ -25,22 +25,40 @@ checkComposeFile() {
     fi
 }
 
+startIofog() {
+    # Spin up containers for another environment
+    echoInfo "Spinning up containers for iofog stack..."
+    docker-compose -f "docker-compose-iofog.yml" up --detach --build
+
+    echoInfo "Initializing iofog stack..."
+    docker logs -f "iofog-init" # wait for the ioFog stack initialization
+    RET=$(docker wait "iofog-init")
+    if [[ "$RET" != "0" ]]; then
+        echoError "Failed to initialize iofog stack!"
+        exit 3
+    fi
+    echoInfo "Successfully initialized iofog stack."
+}
+
 startEnvironment() {
     local ENVIRONMENT="$1"
-    local COMPOSE_FILE="docker-compose-${ENVIRONMENT}.yml"
+    local COMPOSE_PARAM="-f docker-compose-${ENVIRONMENT}.yml"
 
-    # Spin up contianers for another environment
+    # Spin up containers for another environment
     echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
-    docker-compose -f "${COMPOSE_FILE}" up --detach --force-recreate --build
+    docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-${ENVIRONMENT}.yml" \
+        build "${ENVIRONMENT}-init"
+    docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-${ENVIRONMENT}.yml" \
+        up --detach --no-recreate "${ENVIRONMENT}-init"
 
     echoInfo "Initializing ${ENVIRONMENT} environment..."
     docker logs -f "${ENVIRONMENT}-init" # wait for the ioFog stack initialization
     RET=$(docker wait "${ENVIRONMENT}-init")
     if [[ "$RET" != "0" ]]; then
-        echoError "Failed to initialize ${ENVIRONMENT} stack!"
+        echoError "Failed to initialize ${ENVIRONMENT} environment!"
         exit 3
     fi
-    echoInfo "Successfully setup ${ENVIRONMENT} environment..."
+    echoInfo "Successfully setup ${ENVIRONMENT} environment."
 }
 
 ! getopt -T
@@ -85,14 +103,14 @@ checkComposeFile "iofog"
 if [[ "${ENVIRONMENT}" != "iofog" ]]; then checkComposeFile "${ENVIRONMENT}"; fi
 
 # Create a new ssh key
-echoInfo "Adding new ssh key pair to Agent..."
+echoInfo "Creating new ssh key for tests..."
 rm -f test/conf/id_ecdsa*
 ssh-keygen -t ecdsa -N "" -f test/conf/id_ecdsa -q
 cp -f test/conf/id_ecdsa.pub services/iofog/iofog-agent/
 
 # Start ioFog stack
 # TODO check if this environment is up or not
-startEnvironment "iofog"
+startIofog
 
 # Optionally start another environment
 if [[ "${ENVIRONMENT}" != "iofog" ]]; then

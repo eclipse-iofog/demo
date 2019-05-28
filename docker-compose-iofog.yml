@@ -1,6 +1,5 @@
 version: "3"
 services:
-
     iofog-connector:
         build: ./services/iofog/iofog-connector
         container_name: iofog-connector

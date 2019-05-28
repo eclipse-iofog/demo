@@ -105,6 +105,7 @@ Alternatively, if you want to tear down all the applications and the ioFog stack
 
 
 # Structure Of This Repository
+<!-- TODO needs to be updated to reflect the new structure -->
 ```text
 * services                  # Service Dockerfiles and customization files
                             # TODO this is to be removed once iofog-* images are pulled directly

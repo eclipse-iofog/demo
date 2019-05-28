@@ -112,7 +112,7 @@ function createDefaultFlow() {
     echo -n "Creating default flow..."
     curl --request POST --url "${CONTROLLER_HOST}/flow" \
          --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' \
-         --data '{"name": "${DEFAULT_FLOW}","isActivated":true}' 2> /dev/null 1>&2
+         --data "{\"name\": \"${DEFAULT_FLOW}\",\"isActivated\":true}" 2> /dev/null 1>&2
 
     # Retrieve just created flow's id
     FLOW_ID=$(curl --request GET --url "${CONTROLLER_HOST}/flow" \
