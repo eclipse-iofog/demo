@@ -1,5 +1,4 @@
 .DS_Store
-/services/iofog/iofog-agent/id_ecdsa*
 
 # Created by https://www.gitignore.io/api/node,intellij
 # Edit at https://www.gitignore.io/?templates=node,intellij

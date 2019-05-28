@@ -31,7 +31,16 @@ startEnvironment() {
 
     # Spin up contianers for another environment
     echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
-    docker-compose -f "${COMPOSE_FILE}" up --detach
+    docker-compose -f "${COMPOSE_FILE}" up --detach --force-recreate --build
+
+    echoInfo "Initializing ${ENVIRONMENT} environment..."
+    docker logs -f "${ENVIRONMENT}-init" # wait for the ioFog stack initialization
+    RET=$(docker wait "${ENVIRONMENT}-init")
+    if [[ "$RET" != "0" ]]; then
+        echoError "Failed to initialize ${ENVIRONMENT} stack!"
+        exit 3
+    fi
+    echoInfo "Successfully setup ${ENVIRONMENT} environment..."
 }
 
 ! getopt -T
@@ -45,7 +54,7 @@ if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
     printHelp
     exit 1
 fi
-eval set -- "$OPTIONS"
+eval set -- "${OPTIONS}"
 
 ENVIRONMENT=''
 while [[ "$#" -ge 1 ]]; do
@@ -77,27 +86,18 @@ if [[ "${ENVIRONMENT}" != "iofog" ]]; then checkComposeFile "${ENVIRONMENT}"; fi
 
 # Create a new ssh key
 echoInfo "Adding new ssh key pair to Agent..."
-rm -f services/iofog/iofog-agent/id_ecdsa*
-ssh-keygen -t ecdsa -N "" -f services/iofog/iofog-agent/id_ecdsa -q
+rm -f test/conf/id_ecdsa*
+ssh-keygen -t ecdsa -N "" -f test/conf/id_ecdsa -q
+cp -f test/conf/id_ecdsa.pub services/iofog/iofog-agent/
 
 # Start ioFog stack
+# TODO check if this environment is up or not
 startEnvironment "iofog"
-docker logs -f iofog-init # wait for the ioFog stack initialization
-RET=$(docker wait iofog-init)
-if [[ "$RET" != "0" ]]; then
-    echo "Failed to initialize ioFog stack!"
-    exit 3
-fi
 
 # Optionally start another environment
 if [[ "${ENVIRONMENT}" != "iofog" ]]; then
+    # TODO check if this environment is up or not
     startEnvironment "${ENVIRONMENT}";
-    docker logs -f "${ENVIRONMENT}-init" # wait for the ioFog stack initialization
-    RET=$(docker wait "${ENVIRONMENT}-init")
-    if [[ "$RET" != "0" ]]; then
-        echo "Failed to initialize ${ENVIRONMENT} environment!"
-        exit 3
-    fi
 fi
 
 # Display the running environment

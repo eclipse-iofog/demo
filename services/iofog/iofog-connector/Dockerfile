@@ -7,9 +7,9 @@ RUN apt-get update -qq && apt-get install -qqy \
     software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# Install iofog-connector
-RUN curl -s https://packagecloud.io/install/repositories/iofog/iofog-connector/script.deb.sh | sudo bash
-RUN sudo apt-get install iofog-connector
+# Install iofog-connector (script requires sudo, curl and software-properties-common)
+RUN wget -q -O - https://packagecloud.io/install/repositories/iofog/iofog-connector/script.deb.sh | bash
+RUN apt-get install iofog-connector
 
 # Copy in the connector configuration
 COPY iofog-connector.conf /etc/iofog-connector/iofog-connector.conf

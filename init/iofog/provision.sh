@@ -93,6 +93,7 @@ function configureAgent() {
 function configureController() {
     echo "Configuring Controller..."
     CONNECTOR_IP=$(getent hosts iofog-connector | awk '{ print $1 }')
+    # TODO this is the only "docker exec" for controller - needs to be replaced with REST API
     docker exec iofog-controller \
         iofog-controller connector add -n iofog-connector -d "${CONNECTOR_IP}" -i "${CONNECTOR_IP}" -H
 }
@@ -127,9 +128,6 @@ CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
 CONNECTOR_HOST="http://iofog-connector:8080/api/v2"
 DEFAULT_FOG="Default Fog"
 DEFAULT_FLOW="Default Flow"
-
-# TODO remove the loop in the dockerfile
-# TODO cleanup all other provisioning scripts
 
 waitForConnector
 waitForController
