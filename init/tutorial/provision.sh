@@ -81,7 +81,7 @@ function startMicroserviceFreeboard() {
                            2> /dev/null | jq -r .id)
     echo "${FREEBOARD_CATALOG_ID}"
 
-    echo -n 'Configuring Freeboard microservice'
+    echo -n 'Creating Freeboard microservice... '
     FREEBOARD_UUID=$(curl --request POST --url $CONTROLLER_HOST/microservices \
                           --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' \
                           --data '{"name":"Freeboard","config":"{}","catalogItemId":'"${FREEBOARD_CATALOG_ID}"',"flowId":'"${FLOW_ID}"',"iofogUuid":"'"${FOG_ID}"'","rootHostAccess":false,"logSize":5,"volumeMappings":[],"ports":[{"internal":80,"external":10102,"publicMode":false}],"routes":[]}' \
@@ -91,7 +91,7 @@ function startMicroserviceFreeboard() {
 
 function routeSensorsToApi() {
     echo 'Creating route between Sensors and REST API microservices...'
-    curl --request POST --url "$CONTROLLER_HOST/microservices/${SENSORS_UUID}/routes/${RESTAPI_UUID}" \
+    curl --request POST --url "${CONTROLLER_HOST}/microservices/${SENSORS_UUID}/routes/${RESTAPI_UUID}" \
          --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' 2> /dev/null
 }
 
@@ -107,8 +107,8 @@ getDemoFogId
 getDemoFlowId
 startMicroserviceSensors
 startMicroserviceRestApi
-routeSensorsToApi
 startMicroserviceFreeboard
+routeSensorsToApi
 
 echo "Successfully initialized tutorial."
 

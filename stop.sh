@@ -47,4 +47,7 @@ prettyHeader "Stopping ioFog Demo..."
 echoInfo "Stopping all containers..."
 docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-tutorial.yml" down -v
 
+# TODO stopping the ioFog stack leaves its microservices running - fix this properly
+docker ps -q --filter 'name=iofog*' | xargs --no-run-if-empty docker rm -f
+
 echoNotify "ioFog Demo is stopped"

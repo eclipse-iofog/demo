@@ -59,6 +59,7 @@ startEnvironment() {
         exit 3
     fi
     echoInfo "Successfully setup ${ENVIRONMENT} environment."
+    echoInfo "It may take a while before ioFog stack creates all ${ENVIRONMENT} microservices."
 }
 
 ! getopt -T

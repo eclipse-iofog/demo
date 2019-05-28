@@ -54,12 +54,12 @@ When you are finished, tear down the ioFog stack and all services deployed on it
 
 ## Interacting With The ioFog Stack - CLI
 
-The simples way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface. The main interaction point for users is the Controller.
+The simplest way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface. The main interaction point for users is the Controller.
 
 ```sh
 docker exec -it iofog-controller iofog-controller help
 ```
-_For the purpose of this demo, all ioFog components are spun up in separate Docker containers. The Controller's container is called `iofog-controller` (the first occurrence in the above command) and the executable inside the container is also called `iofog-controller` (the second occurrence).)_
+For the purpose of this demo, all ioFog components are spun up in separate Docker containers. The Controller's container is called `iofog-controller` (the first occurrence in the above command) and the executable inside the container is also called `iofog-controller` (the second occurrence).)_
 
 Names for all the containers created in the demo are `iofog-agent`, `iofog-controller` and `iofog-connector`.
 
@@ -83,74 +83,37 @@ Full reference of the REST API for all ioFog stack components is available at th
 Note that if you would like to use Agent, Controller, and Connector's REST APIs, you will have to modify the Compose environment to deploy with network_mode "host".
 
 
-# Try ioFog - Sample Application Deployed On ioFog
+# Try ioFog - Tutorial Application Deployed On ioFog
 
-First, create all services for a sample ioFog application. This is the same sample application that is used in the ioFog tutorial. You don't have to start the iofog stack manually, it will be created if necessary.
+First, create all services for a tutorial ioFog application. This is the the sample application that is used in the ioFog tutorial. You don't have to start the iofog stack manually, it will be created if necessary.
 
 ```sh
-./start.sh sample
+./start.sh tutorial
 ```
 
-Rest if all tutorial services and the ioFog stack are working correctly.
+When you are done with the tutorial, you can tear down the sample application together with the ioFog stack. Note there is currently no wya in the demo to tear down just the tutorial application.
 ```sh
-./test.sh sample
+./stop.sh
 ```
-
-When you are done with the tutorial, you can tear down the sample application.
-```sh
-./stop.sh sample
-```
-
-Alternatively, if you want to tear down all the applications and the ioFog stack, simply run `./stop.sh` without arguments.
-
 
 # Structure Of This Repository
-<!-- TODO needs to be updated to reflect the new structure -->
 ```text
 * services                  # Service Dockerfiles and customization files
-                            # TODO this is to be removed once iofog-* images are pulled directly
     - iofog
-        + iofog-agent       # part of iofog stack
-            * Dockerfile
-            * config.xml
-            * supervisord.conf
-        + iofog-connector   # part of iofog stack
-            * Dockerfile
-        + iofog-controller  # part of iofog stack
-            * Dockerfile
-    - tutorial
-        + core-networking   # tutorial -        
-            * Dockerfile
-        + freeboard         # tutorial -
-            * Dockerfile
-        + sensors           # tutorial -
-            * Dockerfile
-    - another-demo-1
-        + ...
-    - another-demo-2
-        + ...
-* init                  
-    - iofog             # ioFog initialization container and scripts
-        + Dockerfile
-        + init.sh
-    - tutorial          # sets up everything for the environment
-        + Dockerfile
-        + init.sh       # anything that calls the controller API
-    - another-demo
-        + ...
-* test                  # test containers for all scenarios
-    - iofog
-        + Dockerfile
-    - tutorial
-        + Dockerfile
-    - another-demo
-        + ...
-* conf # supporting configuration files 
-* docker-compose-iofog.yml
-* docker-compose-iofog-test.yml
-* docker-compose-tutorial.yml
-* docker-compose-tutorial-test.yml
-* docker-compose-another-demo.yml
-* docker-compose-another-demo-test.yml
+        + iofog-agent       # Agent service files - part of the iofog stack
+        + iofog-connector   # Connector service files - part of the iofog stack
+        + iofog-controller  # Controller service files - part of the iofog stack
+* init
+    - iofog                 # plain ioFog stack initialization service        
+    - tutorial              # tutorial initialization service
+* test
+    + conf                  # generated test configuration files 
 * azure-pipelines.yml
+* docker-compose-iofog.yml
+* docker-compose-tutorial.yml
+* docker-compose-test.yml
+* start.sh
+* stop.sh
+* test.sh
+* uitl.sh
 ```
