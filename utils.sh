@@ -50,13 +50,13 @@ prettyUsage() {
 checkForInstallation() {
 
 	# Does the command exist?
-	if [ ! "$(command -v "$1")" ]; then
+	if [[ ! "$(command -v "$1")" ]]; then
 		echoError " ✖️ $1 not found please review your bootstrap script for missing dependencies"
 		exit 1
 	else
 		# Are we looking for a specific version?
-		if [ ! -z "$2" ]; then
-			if [ "$2" != "$($1 --version)" ]; then
+		if [[ ! -z "$2" ]]; then
+			if [[ "$2" != "$($1 --version)" ]]; then
 				echoError " ✖️ $1 is the wrong version. Found $($1 --version) but expected $2"
 				exit 1
 			fi
@@ -73,7 +73,7 @@ checkForInstallation() {
 #   $D_NUM - the version number of the os E.g. 16
 #
 checkOSPlatform() {
-	if [ "$(uname -s)" = "Darwin" ]; then
+	if [[ "$(uname -s)" = "Darwin" ]]; then
 		ID=macos
 		D_NUM="$(sysctl kern.osproductversion | awk '{print $2}' | awk -F '.' '{print $1}')"
 	else
@@ -81,7 +81,7 @@ checkOSPlatform() {
 		D_NUM="$(echo ${VERSION_ID} | awk -F '.' '{print $1}')"
 
 		# Push us into privileged if we aren't already
-		if [ ! "$(id -u)" = "0" ] && [ ! "$1" = "--help" ]; then
+		if [[ ! "$(id -u)" = "0" ]] && [[ ! "$1" = "--help" ]]; then
 			echoNotify " If you are a new developer please run this script with --help"
 			exec sudo -E "PATH=$PATH" sh "${THIS_SCRIPT}" "$@"
 		fi
@@ -102,28 +102,28 @@ RED="\\033[38;5;1m"
 GREEN="\\033[38;5;28m"
 
 # Need this as bash and sh require different args for the echo command
-if [ "${ISBASH}" ]; then
+if [[ "${ISBASH}" ]]; then
 	PRINTARGS="-e"
 fi
 
 # Basic subtle output
 echoInfo() {
-	echo $PRINTARGS "${C_SKYBLUE1}$1 ${NO_FORMAT}"
+	echo ${PRINTARGS} "${C_SKYBLUE1}$1 ${NO_FORMAT}"
 }
 
 # Highlighted output with a background
 echoNotify() {
-	echo $PRINTARGS "${C_DEEPSKYBLUE4}${1} ${NO_FORMAT}"
+	echo ${PRINTARGS} "${C_DEEPSKYBLUE4}${1} ${NO_FORMAT}"
 }
 
 # Hurrah!
 echoSuccess() {
-	echo $PRINTARGS "${GREEN}$1 ${NO_FORMAT}"
+	echo ${PRINTARGS} "${GREEN}$1 ${NO_FORMAT}"
 }
 
 # Houston, we have a problem!
 echoError() {
-	echo $PRINTARGS "${RED}$1 ${NO_FORMAT}"
+	echo ${PRINTARGS} "${RED}$1 ${NO_FORMAT}"
 }
 
 # Are we in debug mode?
