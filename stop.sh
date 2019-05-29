@@ -50,4 +50,8 @@ docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-tutorial.yml" do
 # TODO stopping the ioFog stack leaves its microservices running - fix this properly
 docker ps -q --filter 'name=iofog*' | xargs --no-run-if-empty docker rm -f
 
+# Remove generated files
+find test/conf -type f -not -name ".gitignore" -exec rm -f {} \;
+rm -f "services/iofog/iofog-agent/id_ecdsa.pub"
+
 echoNotify "ioFog Demo is stopped"
