@@ -21,6 +21,15 @@ checkForDebug() {
 }
 
 #
+# Display a nice title line for any output. You can optionally populate it with a string
+#
+# Usage: prettyTitle "Bootstrapping ioFog"
+#
+prettyTitle() {
+	echoInfo "## $1 ####################################################"
+}
+
+#
 # Display a nice header for any command line script. You can optionally populate it with a string
 #
 # Usage: prettyHeader "Bootstrapping ioFog"

@@ -11,4 +11,4 @@ set -e
 prettyHeader "Spinning down iofog Demo environment"
 docker-compose down -v
 
-echoInfo "ioFog demo is stopped"
+prettyTitle "ioFog demo is stopped"

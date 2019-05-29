@@ -24,5 +24,7 @@ echoInfo "Building and Starting Docker Compose environment"
 docker-compose -f docker-compose.yml up --build --detach
 
 # Display the running environment
-docker ps
-echoNotify "ioFog Demo is now running"
+prettyTitle "ioFog Demo Environment is now running"
+echoInfo "  $(docker ps)"
+echo
+echoSuccess "## iofog-controller is running at http://localhost:$(docker port iofog-controller | awk '{print $1}' | cut -b 1-5)"
