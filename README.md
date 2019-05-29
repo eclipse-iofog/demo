@@ -80,12 +80,17 @@ Full reference of the REST API for all ioFog stack components is available at th
 * https://iofog.org/docs/1.0.0/agents/local-api.html
 * https://iofog.org/docs/1.0.0/connectors/api-reference.html
 
-Note that if you would like to use Agent, Controller, and Connector's REST APIs, you will have to modify the Compose environment to deploy with network_mode "host".
+You can try using the REST API directly on your machine with the ioFog stack running.
+```sh
+curl --url 'http://0.0.0.0:51121/api/v3/status' 
+```
 
 
 # Try ioFog - Tutorial Application Deployed On ioFog
 
-First, create all services for a tutorial ioFog application. This is the the sample application that is used in the ioFog tutorial. You don't have to start the iofog stack manually, it will be created if necessary.
+Apart from creating just the ioFog stack, we can also deploy an ioFog application on the stack. Here we demonstrate it on the tutorial application from the ioFog website.
+
+First, create all services for a tutorial ioFog application. You don't have to start the iofog stack manually, it will be created if necessary.
 
 ```sh
 ./start.sh tutorial
