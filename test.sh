@@ -50,4 +50,4 @@ docker-compose -f docker-compose-test.yml up \
     --force-recreate \
     --renew-anon-volumes
 
-echoNotify "Test Runner Tests complete"
+echoNotify "## Test Runner Tests complete"

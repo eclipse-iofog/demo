@@ -54,4 +54,4 @@ docker ps -q --filter 'name=iofog*' | xargs --no-run-if-empty docker rm -f
 find test/conf -type f -not -name ".gitignore" -exec rm -f {} \;
 rm -f "services/iofog/iofog-agent/id_ecdsa.pub"
 
-echoNotify "ioFog Demo is stopped"
+prettyTitle "ioFog demo is stopped"
