@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM docker:dind
 
 RUN apk add --no-cache curl jq
 

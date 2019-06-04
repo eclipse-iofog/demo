@@ -26,9 +26,11 @@ checkComposeFile() {
 }
 
 startIofog() {
-    # Spin up containers for another environment
+    echoInfo "Building containers for iofog stack..."
+    docker-compose -f "docker-compose-iofog.yml" build > /dev/null
+
     echoInfo "Spinning up containers for iofog stack..."
-    docker-compose -f "docker-compose-iofog.yml" up --detach --build
+    docker-compose -f "docker-compose-iofog.yml" up --detach --no-recreate
 
     echoInfo "Initializing iofog stack..."
     docker logs -f "iofog-init" # wait for the ioFog stack initialization
@@ -44,10 +46,11 @@ startEnvironment() {
     local ENVIRONMENT="$1"
     local COMPOSE_PARAM="-f docker-compose-${ENVIRONMENT}.yml"
 
-    # Spin up containers for another environment
-    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
+    echoInfo "Building containers for ${ENVIRONMENT} environment..."
     docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-${ENVIRONMENT}.yml" \
-        build "${ENVIRONMENT}-init"
+        build "${ENVIRONMENT}-init" > /dev/null
+
+    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
     docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-${ENVIRONMENT}.yml" \
         up --detach --no-recreate "${ENVIRONMENT}-init"
 
@@ -124,3 +127,6 @@ prettyTitle "ioFog Demo Environment is now running"
 echoInfo "  $(docker ps)"
 echo
 echoSuccess "## iofog-controller is running at http://localhost:$(docker port iofog-controller | awk '{print $1}' | cut -b 1-5)"
+if [[ "${ENVIRONMENT}" == "tutorial" ]]; then
+    echoSuccess "## Visit https://iofog.org/docs/1.0.0/tutorial/introduction.html to continue with the ioFog tutorial."
+fi
