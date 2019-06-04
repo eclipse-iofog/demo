@@ -71,7 +71,7 @@ function createDefaultFog() {
         sleep 2
     done
 
-    echo -n "Creating default fog..."
+    echo -n "Creating default fog... "
     curl --request POST --url "${CONTROLLER_HOST}/iofog" \
          --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' \
          --data "{\"name\": \"${DEFAULT_FOG}\",\"fogType\": 1}" 2> /dev/null 1>&2
@@ -86,8 +86,8 @@ function createDefaultFog() {
 
 function configureAgent() {
     echo "Configuring Agent..."
-    docker exec iofog-agent iofog-agent config -idc off
-    docker exec iofog-agent iofog-agent config -a "${CONTROLLER_HOST}"
+    docker exec iofog-agent iofog-agent config -idc off > /dev/null
+    docker exec iofog-agent iofog-agent config -a "${CONTROLLER_HOST}" > /dev/null
 }
 
 function configureController() {
@@ -109,7 +109,7 @@ function provisionAgent() {
 }
 
 function createDefaultFlow() {
-    echo -n "Creating default flow..."
+    echo -n "Creating default flow... "
     curl --request POST --url "${CONTROLLER_HOST}/flow" \
          --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' \
          --data "{\"name\": \"${DEFAULT_FLOW}\",\"isActivated\":true}" 2> /dev/null 1>&2

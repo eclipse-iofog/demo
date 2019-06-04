@@ -8,7 +8,7 @@ cd "$(dirname "$0")"
 
 function waitForController() {
     while true; do
-        STATUS=$(curl --request GET --url "${CONTROLLER_HOST}/status" 2>/dev/null | jq -r ".status")
+        local STATUS=$(curl --request GET --url "${CONTROLLER_HOST}/status" 2>/dev/null | jq -r ".status")
         [[ "${STATUS}" == "online" ]] && break || echo "Waiting for Controller..."
         sleep 2
     done
@@ -95,6 +95,23 @@ function routeSensorsToApi() {
          --header "Authorization: ${TOKEN}" --header 'Content-Type: application/json' 2> /dev/null
 }
 
+function waitForService() {
+    local IMAGE="$1"
+    echo -n "Waiting service $IMAGE..."
+    while true; do
+        local STATUS=$(docker inspect -f {{.State.Running}} $(docker ps -q --filter "ancestor=$IMAGE") 2>/dev/null)
+        [[ "${STATUS}" == "true" ]] && break || echo -n "."
+        sleep 2
+    done
+    echo " OK"
+}
+
+function waitForAllServices() {
+    waitForService "iofog/sensors:latest"
+    waitForService "iofog/freeboard-api:latest"
+    waitForService "iofog/freeboard:latest"
+}
+
 echo "Initializing tutorial. This may take a minute or two."
 
 CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
@@ -109,6 +126,7 @@ startMicroserviceSensors
 startMicroserviceRestApi
 startMicroserviceFreeboard
 routeSensorsToApi
+waitForAllServices
 
 echo "Successfully initialized tutorial."
 

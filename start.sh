@@ -26,9 +26,11 @@ checkComposeFile() {
 }
 
 startIofog() {
-    # Spin up containers for another environment
+    echoInfo "Building containers for iofog stack..."
+    docker-compose -f "docker-compose-iofog.yml" build > /dev/null
+
     echoInfo "Spinning up containers for iofog stack..."
-    docker-compose -f "docker-compose-iofog.yml" up --detach --build
+    docker-compose -f "docker-compose-iofog.yml" up --detach --no-recreate
 
     echoInfo "Initializing iofog stack..."
     docker logs -f "iofog-init" # wait for the ioFog stack initialization
@@ -44,10 +46,11 @@ startEnvironment() {
     local ENVIRONMENT="$1"
     local COMPOSE_PARAM="-f docker-compose-${ENVIRONMENT}.yml"
 
-    # Spin up containers for another environment
-    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
+    echoInfo "Building containers for ${ENVIRONMENT} environment..."
     docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-${ENVIRONMENT}.yml" \
-        build "${ENVIRONMENT}-init"
+        build "${ENVIRONMENT}-init" > /dev/null
+
+    echoInfo "Spinning up containers for ${ENVIRONMENT} environment..."
     docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-${ENVIRONMENT}.yml" \
         up --detach --no-recreate "${ENVIRONMENT}-init"
 
@@ -62,19 +65,6 @@ startEnvironment() {
     echoInfo "It may take a while before ioFog stack creates all ${ENVIRONMENT} microservices."
 }
 
-! getopt -T
-if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
-    echoError 'Your getopt version is insufficient!'
-    exit 2
-fi
-
-! OPTIONS=$(getopt --options="h" --longoptions="help" --name "$0" -- $@)
-if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
-    printHelp
-    exit 1
-fi
-eval set -- "${OPTIONS}"
-
 ENVIRONMENT=''
 while [[ "$#" -ge 1 ]]; do
     case "$1" in
@@ -82,14 +72,11 @@ while [[ "$#" -ge 1 ]]; do
             printHelp
             exit 0
             ;;
-        --)
-            shift
-            ;;
         *)
             if [[ -n "${ENVIRONMENT}" ]]; then
                 echoError "Cannot specify more than one environment!"
                 printHelp
-                exit1
+                exit 1
             fi
             ENVIRONMENT=$1
             shift
@@ -124,3 +111,6 @@ prettyTitle "ioFog Demo Environment is now running"
 echoInfo "  $(docker ps)"
 echo
 echoSuccess "## iofog-controller is running at http://localhost:$(docker port iofog-controller | awk '{print $1}' | cut -b 1-5)"
+if [[ "${ENVIRONMENT}" == "tutorial" ]]; then
+    echoSuccess "## Visit https://iofog.org/docs/1.0.0/tutorial/introduction.html to continue with the ioFog tutorial."
+fi
