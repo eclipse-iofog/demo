@@ -26,7 +26,7 @@ if [ -f /first_run.tmp ]; then
         --url $CONTROLLER_HOST/iofog \
         --header "Authorization: $token" \
         --header 'Content-Type: application/json' \
-        --data '{"name": "ioFog Node","fogType": 1}')
+        --data '{"name": "ioFog Agent","fogType": 1}')
 
     rm /first_run.tmp
 fi

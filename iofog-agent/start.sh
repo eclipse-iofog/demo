@@ -41,7 +41,7 @@ if [ -f /first_run.tmp ]; then
             --header "Authorization: $token" \
             --header 'Content-Type: application/json')
         echo $item
-        uuid=$(echo $item | jq -r '.fogs[] | select(.name == "ioFog Node") | .uuid')
+        uuid=$(echo $item | jq -r '.fogs[] | select(.name == "ioFog Agent") | .uuid')
 
         if [ ! -z "$uuid" ]; then
             break
