@@ -126,7 +126,7 @@ echo "Initializing ioFog stack. This may take a minute or two."
 docker --version # Check if docker is available. Needs docker socket mapped in order to talk to the Agent
 CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
 CONNECTOR_HOST="http://iofog-connector:8080/api/v2"
-DEFAULT_FOG="Default Fog"
+DEFAULT_FOG="ioFog Agent"
 DEFAULT_FLOW="Default Flow"
 
 waitForConnector
