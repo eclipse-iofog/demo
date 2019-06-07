@@ -115,7 +115,7 @@ function waitForAllServices() {
 echo "Initializing tutorial. This may take a minute or two."
 
 CONTROLLER_HOST="http://iofog-controller:51121/api/v3"
-DEFAULT_FOG="Default Fog"
+DEFAULT_FOG="ioFog Agent"
 DEFAULT_FLOW="Default Flow"
 
 waitForController

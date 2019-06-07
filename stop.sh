@@ -35,7 +35,11 @@ echoInfo "Stopping all containers..."
 docker-compose -f "docker-compose-iofog.yml" -f "docker-compose-tutorial.yml" down -v
 
 # TODO stopping the ioFog stack leaves its microservices running - fix this properly
-docker ps -q --filter 'name=iofog*' | xargs --no-run-if-empty docker rm -f
+REMAINING_MSVC=`docker ps -q --filter 'name=iofog*'`
+
+if [ ! -z "${REMAINING_MSVC}" ]; then
+    docker rm -f ${REMAINING_MSVC}
+fi
 
 # Remove generated files
 find test/conf -type f -not -name ".gitignore" -exec rm -f {} \;
