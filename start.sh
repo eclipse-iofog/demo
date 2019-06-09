@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -o errexit -o pipefail -o noclobber -o nounset
+set -x
 cd "$(dirname "$0")"
 
 # Import our helper functions

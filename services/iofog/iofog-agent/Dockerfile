@@ -10,8 +10,9 @@ RUN apt-get update -qq && apt-get install -qqy \
     && rm -rf /var/lib/apt/lists/*
 
 # Install iofog-agent (script requires sudo, curl and software-properties-common)
-RUN wget -q -O - https://packagecloud.io/install/repositories/iofog/iofog-agent/script.deb.sh | bash
-RUN apt-get install iofog-agent
+COPY ./install.sh ./install.sh
+RUN ./install.sh
+RUN rm ./install.sh
 
 # SSH Magic
 # Allows the test's container "test-runner" access to iofog-agent, due to the agent's lack of REST API

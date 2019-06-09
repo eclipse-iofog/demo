@@ -2,6 +2,8 @@ version: "3"
 services:
     iofog-connector:
         build: ./services/iofog/iofog-connector
+        environment:
+            - LOCAL_CONNECTOR_PACKAGE
         container_name: iofog-connector
         ports:
             - "53321:8080"
@@ -9,6 +11,8 @@ services:
 
     iofog-controller:
         build: ./services/iofog/iofog-controller
+        environment:
+            - LOCAL_CONTROLLER_PACKAGE
         container_name: iofog-controller
         depends_on:
             - iofog-connector
@@ -22,6 +26,8 @@ services:
 
     iofog-agent:
         build: ./services/iofog/iofog-agent
+        environment:
+            - LOCAL_AGENT_PACKAGE
         depends_on:
             - iofog-controller
         privileged: true
