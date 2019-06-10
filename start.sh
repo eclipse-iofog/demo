@@ -7,11 +7,17 @@ cd "$(dirname "$0")"
 . ./utils.sh
 
 printHelp() {
-	echo "Usage:   ./start.sh [environment]"
+	echo "Usage:   ./start.sh [opts] [environment]"
 	echo "Starts ioFog environments and optionally sets up demo and tutorial environment"
 	echo ""
-	echo "Arguments:"
+	echo "Options:"
 	echo "    -h, --help        print this help / usage"
+	echo "    -a, --agent       specify a local agent package"
+	echo "    -ct, --controller specify a local controller package"
+	echo "    -cn, --connector  specify a local connector package"
+	echo "    --no-cache        prevent the usage of cache during the build step"
+    echo ""
+    echo "Arguments:"
 	echo "    [environment]     setup demo application, optional, default: iofog"
 	echo "                      supported values: iofog, tutorial"
 }
@@ -27,11 +33,9 @@ checkComposeFile() {
 
 startIofog() {
     echoInfo "Building containers for iofog stack..."
-    if [ ! -z "$IOFOG_BUILD_NO_CACHE" ]; then
-        docker-compose -f "docker-compose-iofog.yml" build --no-cache > /dev/null
-    else
-        docker-compose -f "docker-compose-iofog.yml" build > /dev/null
-    fi
+    local BUILD_ARGS="--build-arg LOCAL_CONTROLLER_PACKAGE=${CONTROLLER_PACKAGE} --build-arg LOCAL_CONNECTOR_PACKAGE=${CONNECTOR_PACKAGE} --build-arg LOCAL_AGENT_PACKAGE=${AGENT_PACKAGE}"
+    local COMPOSE_BUILD_ARGS="${IOFOG_BUILD_NO_CACHE} ${BUILD_ARGS:=""}"
+    docker-compose -f "docker-compose-iofog.yml" build ${COMPOSE_BUILD_ARGS} > /dev/null
 
     echoInfo "Spinning up containers for iofog stack..."
     docker-compose -f "docker-compose-iofog.yml" up --detach --no-recreate
@@ -70,11 +74,37 @@ startEnvironment() {
 }
 
 ENVIRONMENT=''
+IOFOG_BUILD_NO_CACHE=''
+AGENT_PACKAGE=''
+CONTROLLER_PACKAGE=''
+CONNECTOR_PACKAGE=''
 while [[ "$#" -ge 1 ]]; do
     case "$1" in
         -h|--help)
             printHelp
             exit 0
+            ;;
+        --no-cache)
+            IOFOG_BUILD_NO_CACHE="--no-cache"
+            shift
+            ;;
+        -a|--agent)
+            AGENT_PACKAGE="local-agent-package.deb"
+            cp -i "$2" "./services/iofog/iofog-agent/$AGENT_PACKAGE" || true
+            shift
+            shift
+            ;;
+        -ct|--controller)
+            CONTROLLER_PACKAGE="local-controller-package.tgz"
+            cp -i "$2" "./services/iofog/iofog-controller/$CONTROLLER_PACKAGE" || true
+            shift
+            shift
+            ;;
+        -cn|--connector)
+            CONNECTOR_PACKAGE="local-connector-package.deb"
+            cp -i "$2" "./services/iofog/iofog-connector/$CONNECTOR_PACKAGE" || true
+            shift
+            shift
             ;;
         *)
             if [[ -n "${ENVIRONMENT}" ]]; then
@@ -87,7 +117,6 @@ while [[ "$#" -ge 1 ]]; do
             ;;
     esac
 done
-IOFOG_BUILD_NO_CACHE=${IOFOG_BUILD_NO_CACHE:=""} # by default, use docker cache to build images
 ENVIRONMENT=${ENVIRONMENT:="iofog"} # by default, setup only the ioFog stack
 
 prettyHeader "Starting ioFog Demo (\"${ENVIRONMENT}\" environment)..."

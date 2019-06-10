@@ -56,34 +56,34 @@ When you are finished, tear down the ioFog stack and all services deployed on it
 
 If you have a local version of the Agent, Controller and Connector, you can chose to build the containers using those local packages.
 To do so, you will need a debian package (`.deb`) for the Agent and the Connector and a tarball (`.tgz`) for the Controller.
-First place your packages into their respective directory under `services/iofog/` (I.E, the Agent debian package goes to `services/iofog/iofog-agent/<agent-package-name.deb>`)
-Then you will have to add an environment variable to your `start.sh` command for each package you want to build locally.
+You can provide `start.sh` with an option for each local package you want to use.
 
 ### Example
 Folder structure:
 ```text
-* services                  
-    - iofog
-        + iofog-agent       # Agent service files - part of the iofog stack
-            * iofog-agent-2.0.deb # Local agent package
-        + iofog-connector   # Connector service files - part of the iofog stack
-            * iofog-connector-2.0.deb # Local connector package
-        + iofog-controller  # Controller service files - part of the iofog stack
-            * iofog-controller-2.0.tgz # Local controller package
+* services
+* init
+* test
+* local-packages  # Example folder where you would store your local packages
+    - iofog-agent_2.0.deb
+    - iofog-connector_2.0.deb
+    - iofog-controller_2.0.tgz
+* start.sh
+* stop.sh
 * ...
 ```
 
 Command:
 ```sh
-LOCAL_AGENT_PACKAGE=iofog-agent-2.0.deb LOCAL_CONNECTOR_PACKAGE=iofog-connector-2.0.deb LOCAL_CONTROLLER_PACKAGE=iofog-controller-2.0.tgz ./start.sh
+./start.sh -a ./local-packages/iofog-agent_2.0.deb -cn ./local-packages/iofog-connector_2.0.deb -ct ./local-packages/iofog-controller_2.0.tgz
 ```
 
 ## Force rebuild
-If you have previously built the containers using local packages, or remote packages and you want to ensure that running `start.sh` will rebuild the images, you can also provide the environment variable `IOFOG_BUILD_NO_CACHE`.
+If you have previously built the containers using local packages, or remote packages and you want to ensure that running `start.sh` will rebuild the images, you can also provide the `--no-cache` option
 
 
 ```sh
-IOFOG_BUILD_NO_CACHE=true <any other env variables you need> ./start.sh
+./start.sh --no-cache
 ```
 
 ## Interacting With The ioFog Stack - CLI
@@ -154,5 +154,5 @@ When you are done with the tutorial, you can tear down the sample application to
 * start.sh
 * stop.sh
 * test.sh
-* uitl.sh
+* utils.sh
 ```
