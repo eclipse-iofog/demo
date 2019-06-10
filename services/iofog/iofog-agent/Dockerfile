@@ -1,5 +1,9 @@
 FROM iofog/ubuntu-16.04-java8
 
+ARG LOCAL_AGENT_PACKAGE
+# Copy install script and local package if there is one (No conditional copy in docker)
+COPY ./install.sh ${LOCAL_AGENT_PACKAGE}* /opt/iofog-agent/
+
 # Install our deps
 RUN apt-get update -qq && apt-get install -qqy \
     sudo \
@@ -10,8 +14,8 @@ RUN apt-get update -qq && apt-get install -qqy \
     && rm -rf /var/lib/apt/lists/*
 
 # Install iofog-agent (script requires sudo, curl and software-properties-common)
-RUN wget -q -O - https://packagecloud.io/install/repositories/iofog/iofog-agent/script.deb.sh | bash
-RUN apt-get install iofog-agent
+RUN /opt/iofog-agent/install.sh ${LOCAL_AGENT_PACKAGE}
+RUN rm /opt/iofog-agent/install.sh
 
 # SSH Magic
 # Allows the test's container "test-runner" access to iofog-agent, due to the agent's lack of REST API
