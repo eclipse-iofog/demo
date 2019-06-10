@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -o errexit -o pipefail -o noclobber -o nounset
-set -x
 cd "$(dirname "$0")"
 
 # Import our helper functions
@@ -28,7 +27,11 @@ checkComposeFile() {
 
 startIofog() {
     echoInfo "Building containers for iofog stack..."
-    docker-compose -f "docker-compose-iofog.yml" build > /dev/null
+    if [ ! -z "$IOFOG_BUILD_NO_CACHE" ]; then
+        docker-compose -f "docker-compose-iofog.yml" build --no-cache > /dev/null
+    else
+        docker-compose -f "docker-compose-iofog.yml" build > /dev/null
+    fi
 
     echoInfo "Spinning up containers for iofog stack..."
     docker-compose -f "docker-compose-iofog.yml" up --detach --no-recreate
@@ -84,6 +87,7 @@ while [[ "$#" -ge 1 ]]; do
             ;;
     esac
 done
+IOFOG_BUILD_NO_CACHE=${IOFOG_BUILD_NO_CACHE:=""} # by default, use docker cache to build images
 ENVIRONMENT=${ENVIRONMENT:="iofog"} # by default, setup only the ioFog stack
 
 prettyHeader "Starting ioFog Demo (\"${ENVIRONMENT}\" environment)..."

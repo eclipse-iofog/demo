@@ -1,18 +1,22 @@
 version: "3"
 services:
     iofog-connector:
-        build: ./services/iofog/iofog-connector
-        environment:
-            - LOCAL_CONNECTOR_PACKAGE
+        image: iofog-connector:local
+        build:
+            context: ./services/iofog/iofog-connector
+            args:
+                LOCAL_CONNECTOR_PACKAGE: ${LOCAL_CONNECTOR_PACKAGE}
         container_name: iofog-connector
         ports:
             - "53321:8080"
         network_mode: bridge
 
     iofog-controller:
-        build: ./services/iofog/iofog-controller
-        environment:
-            - LOCAL_CONTROLLER_PACKAGE
+        image: iofog-controller:local
+        build: 
+            context: ./services/iofog/iofog-controller
+            args:
+                LOCAL_CONTROLLER_PACKAGE: ${LOCAL_CONTROLLER_PACKAGE}
         container_name: iofog-controller
         depends_on:
             - iofog-connector
@@ -25,9 +29,11 @@ services:
         network_mode: bridge
 
     iofog-agent:
-        build: ./services/iofog/iofog-agent
-        environment:
-            - LOCAL_AGENT_PACKAGE
+        image: iofog-agent:local
+        build: 
+            context: ./services/iofog/iofog-agent
+            args:
+                LOCAL_AGENT_PACKAGE: ${LOCAL_AGENT_PACKAGE}
         depends_on:
             - iofog-controller
         privileged: true

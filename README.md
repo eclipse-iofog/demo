@@ -52,6 +52,40 @@ When you are finished, tear down the ioFog stack and all services deployed on it
 ./stop.sh
 ```
 
+## Build from local packages
+
+If you have a local version of the Agent, Controller and Connector, you can chose to build the containers using those local packages.
+To do so, you will need a debian package (`.deb`) for the Agent and the Connector and a tarball (`.tgz`) for the Controller.
+First place your packages into their respective directory under `services/iofog/` (I.E, the Agent debian package goes to `services/iofog/iofog-agent/<agent-package-name.deb>`)
+Then you will have to add an environment variable to your `start.sh` command for each package you want to build locally.
+
+### Example
+Folder structure:
+```text
+* services                  
+    - iofog
+        + iofog-agent       # Agent service files - part of the iofog stack
+            * iofog-agent-2.0.deb # Local agent package
+        + iofog-connector   # Connector service files - part of the iofog stack
+            * iofog-connector-2.0.deb # Local connector package
+        + iofog-controller  # Controller service files - part of the iofog stack
+            * iofog-controller-2.0.tgz # Local controller package
+* ...
+```
+
+Command:
+```sh
+LOCAL_AGENT_PACKAGE=iofog-agent-2.0.deb LOCAL_CONNECTOR_PACKAGE=iofog-connector-2.0.deb LOCAL_CONTROLLER_PACKAGE=iofog-controller-2.0.tgz ./start.sh
+```
+
+## Force rebuild
+If you have previously built the containers using local packages, or remote packages and you want to ensure that running `start.sh` will rebuild the images, you can also provide the environment variable `IOFOG_BUILD_NO_CACHE`.
+
+
+```sh
+IOFOG_BUILD_NO_CACHE=true <any other env variables you need> ./start.sh
+```
+
 ## Interacting With The ioFog Stack - CLI
 
 The simplest way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface. The main interaction point for users is the Controller.
