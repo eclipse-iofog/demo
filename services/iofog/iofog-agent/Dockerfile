@@ -2,7 +2,7 @@ FROM iofog/ubuntu-16.04-java8
 
 ARG LOCAL_AGENT_PACKAGE
 # Copy install script and local package if there is one (No conditional copy in docker)
-COPY ./install.sh ${LOCAL_AGENT_PACKAGE}* /opt/iofog-agent/
+COPY ./install.sh ${LOCAL_AGENT_PACKAGE} /opt/iofog-agent/
 
 # Install our deps
 RUN apt-get update -qq && apt-get install -qqy \
