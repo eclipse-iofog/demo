@@ -42,6 +42,7 @@ services:
         container_name: iofog-agent
         ports:
             - "8081:22"
+            - "54321:54321"
         links:
             - iofog-controller:iofog-controller
         network_mode: bridge
