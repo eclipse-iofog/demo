@@ -60,17 +60,17 @@ checkForInstallation() {
 
 	# Does the command exist?
 	if [[ ! "$(command -v "$1")" ]]; then
-		echoError " ✖️ $1 not found please review your bootstrap script for missing dependencies"
-		exit 1
+		echoError " [!] $1 not found"
+		return 1
 	else
 		# Are we looking for a specific version?
 		if [[ ! -z "$2" ]]; then
 			if [[ "$2" != "$($1 --version)" ]]; then
-				echoError " ✖️ $1 is the wrong version. Found $($1 --version) but expected $2"
-				exit 1
+				echoError " !! $1 is the wrong version. Found $($1 --version) but expected $2"
+				return 1
 			fi
 		fi
-		echoSuccess " ✔️  $1 $2 found at $(command -v "$1")"
+		echoSuccess " [x] $1 $2 found at $(command -v "$1")"
 		return 0
 	fi
 }
@@ -111,8 +111,8 @@ RED="\\033[38;5;1m"
 GREEN="\\033[38;5;28m"
 
 # Need this as bash and sh require different args for the echo command
-if [[ "${BASH}" ]]; then
-	PRINTARGS="-e"
+if [ "${BASH_VERSION}" ]; then
+    PRINTARGS="-e"
 fi
 
 # Basic subtle output
@@ -132,7 +132,7 @@ echoSuccess() {
 
 # Houston, we have a problem!
 echoError() {
-	echo ${PRINTARGS} "${RED}$1 ${NO_FORMAT}"
+	echo ${PRINTARGS} "${RED} :: $1 ${NO_FORMAT}"
 }
 
 # Are we in debug mode?

@@ -86,6 +86,12 @@ If you have previously built the containers using local packages, or remote pack
 ./start.sh --no-cache
 ```
 
+## ECN Status
+
+```sh
+./status.sh # Will show you all iofog-related containers currently running.
+```
+
 ## Interacting With The ioFog Stack - CLI
 
 The simplest way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface. The main interaction point for users is the Controller.
