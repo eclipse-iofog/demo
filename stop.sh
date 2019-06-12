@@ -8,7 +8,7 @@ set -e
 # Import our helper functions
 . ./utils.sh
 
-prettyHeader "Spinning down iofog Demo environment"
+prettyHeader "Spinning down ioFog Demo environment"
 docker-compose down -v
 
 prettyTitle "ioFog demo is stopped"

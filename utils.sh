@@ -111,8 +111,8 @@ RED="\\033[38;5;1m"
 GREEN="\\033[38;5;28m"
 
 # Need this as bash and sh require different args for the echo command
-if [[ "${ISBASH}" ]]; then
-	PRINTARGS="-e"
+if [ "${BASH_VERSION}" ]; then
+    PRINTARGS="-e"
 fi
 
 # Basic subtle output
@@ -132,7 +132,7 @@ echoSuccess() {
 
 # Houston, we have a problem!
 echoError() {
-	echo ${PRINTARGS} "${RED}$1 ${NO_FORMAT}"
+	echo ${PRINTARGS} "${RED} :: $1 ${NO_FORMAT}"
 }
 
 # Are we in debug mode?
