@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
+#
 # utils.sh - a simple set of functions for use throughout our bash scripts
 #
 # Usage : source utils.sh
-
+#
 
 # Export the name of the script for later use
 THIS_SCRIPT="$(basename "${0}")"
@@ -11,6 +12,7 @@ export THIS_SCRIPT
 #
 # Check for DEBUG - looks for the DEBUG environment variable. If it
 # is found, it enables more debugging output.
+#
 checkForDebug() {
 
 	# Allow anyone to set a DEBUG environment variable for extra output

@@ -1,6 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# start.sh - is the main start script for our Demo cluster. Running it will launch a docker-compose environment
+# that contains a fully connected ioFog ECN. Optionally, you can launch a different compose, e.g. tutorial.
+#
+# Usage : ./start.sh -h
+#
 
 set -o errexit -o pipefail -o noclobber -o nounset
+
 cd "$(dirname "$0")"
 
 # Import our helper functions
@@ -22,7 +29,7 @@ printHelp() {
 	echo "                      supported values: iofog, tutorial"
 }
 
-checkComposeFile() {
+checkForComposeFile() {
     local ENVIRONMENT="$1"
     local COMPOSE_FILE="docker-compose-${ENVIRONMENT}.yml"
     if [[ ! -f "${COMPOSE_FILE}" ]]; then
@@ -35,7 +42,8 @@ startIofog() {
     echoInfo "Building containers for ioFog stack..."
     local BUILD_ARGS="--build-arg LOCAL_CONTROLLER_PACKAGE=${CONTROLLER_PACKAGE} --build-arg LOCAL_CONNECTOR_PACKAGE=${CONNECTOR_PACKAGE} --build-arg LOCAL_AGENT_PACKAGE=${AGENT_PACKAGE}"
     local COMPOSE_BUILD_ARGS="${IOFOG_BUILD_NO_CACHE} ${BUILD_ARGS:=""}"
-    docker-compose -f "docker-compose-iofog.yml" build ${COMPOSE_BUILD_ARGS} > /dev/null
+    local SERVICE_LIST="iofog-connector iofog-controller iofog-agent iofog-init"
+    docker-compose -f "docker-compose-iofog.yml" build ${COMPOSE_BUILD_ARGS} ${SERVICE_LIST} > /dev/null
 
     echoInfo "Spinning up containers for ioFog stack..."
     docker-compose -f "docker-compose-iofog.yml" up --detach --no-recreate
@@ -117,12 +125,17 @@ while [[ "$#" -ge 1 ]]; do
             ;;
     esac
 done
-ENVIRONMENT=${ENVIRONMENT:="iofog"} # by default, setup only the ioFog stack
 
-prettyHeader "Starting ioFog Demo (\"${ENVIRONMENT}\" environment)..."
+prettyHeader "Starting ioFog Demo"
 
-checkComposeFile "iofog"
-if [[ "${ENVIRONMENT}" != "iofog" ]]; then checkComposeFile "${ENVIRONMENT}"; fi
+# Figure out which environment we are going to be starting. By default, setup only the ioFog stack
+ENVIRONMENT=${ENVIRONMENT:="iofog"}
+
+checkForComposeFile "iofog"
+
+if [[ "${ENVIRONMENT}" != "iofog" ]]; then checkForComposeFile "${ENVIRONMENT}"; fi
+
+echoInfo "Starting \"${ENVIRONMENT}\" demo environment..."
 
 # Create a new ssh key
 echoInfo "Creating new ssh key for tests..."

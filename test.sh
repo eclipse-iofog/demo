@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# test.sh - will pull and run the TestRunner suite against an already Demo compose cluster.
+#
+# Usage : ./test.sh -h
+#
 
 set -o errexit -o pipefail -o noclobber -o nounset
 cd "$(dirname "$0")"
@@ -34,6 +39,7 @@ echoInfo "Retrieving endpoints for ioFog stack"
 AGENT_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-agent)
 CONTROLLER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-controller)
 CONNECTOR_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-connector)
+
 # Output the config for our Test suite config
 echo "${CONNECTOR_IP}:8080" >| test/conf/connector.conf
 echo "${CONTROLLER_IP}:51121" >| test/conf/controller.conf

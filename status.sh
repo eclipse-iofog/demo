@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# status.sh - Print the status of the Demo cluster and it's components
+# status.sh - Print the status of the Demo cluster and its components
 #
 # Usage: ./status.sh
 #

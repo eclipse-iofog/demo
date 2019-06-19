@@ -1,6 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+# stop.sh - will tear down a running docker-compose Demo environment
+#
+# Usage : ./stop.sh -h
+#
 
 set -o errexit -o pipefail -o noclobber -o nounset
+
 cd "$(dirname "$0")"
 
 # Import our helper functions
