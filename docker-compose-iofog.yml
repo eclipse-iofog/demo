@@ -1,0 +1,60 @@
+version: "3"
+services:
+    iofog-connector:
+        image: iofog-connector:local
+        build:
+            context: ./services/iofog/iofog-connector
+            args:
+                - LOCAL_CONNECTOR_PACKAGE
+        container_name: iofog-connector
+        ports:
+            - "53321:8080"
+        network_mode: bridge
+
+    iofog-controller:
+        image: iofog-controller:local
+        build: 
+            context: ./services/iofog/iofog-controller
+            args:
+                - LOCAL_CONTROLLER_PACKAGE
+        container_name: iofog-controller
+        depends_on:
+            - iofog-connector
+        ports:
+            - "51121:51121"
+        environment:
+            - NODE_ENV=development
+        links:
+            - iofog-connector:iofog-connector
+        network_mode: bridge
+
+    iofog-agent:
+        image: iofog-agent:local
+        build: 
+            context: ./services/iofog/iofog-agent
+            args:
+                - LOCAL_AGENT_PACKAGE
+        depends_on:
+            - iofog-controller
+        privileged: true
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        container_name: iofog-agent
+        ports:
+            - "8081:22"
+            - "54321:54321"
+        links:
+            - iofog-controller:iofog-controller
+        network_mode: bridge
+
+    iofog-init:
+        build: ./init/iofog
+        container_name: iofog-init
+        depends_on:
+            - iofog-controller
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        links:
+            - iofog-controller:iofog-controller
+            - iofog-connector:iofog-connector
+        network_mode: bridge

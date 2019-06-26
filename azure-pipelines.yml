@@ -1,8 +1,9 @@
 trigger:
-- master
-- develop
-- blank-environment
-- demo-environment
+  - master
+  - develop
+pr:
+  - master
+  - develop
 
 pool:
   vmImage: 'ubuntu-16.04'
@@ -20,11 +21,6 @@ steps:
   displayName: 'Docker connect to Registry'
 
 - script: |
-    sed -i "s|image:.*|image: $(images.runner)|" docker-compose-test.yml
-    cat docker-compose-test.yml
-  displayName: 'Configure Test Runner image'
-
-- script: |
     ./start.sh
   displayName: 'Start Connector, Controller, and Agent'
 
@@ -35,3 +31,17 @@ steps:
 - script: |
     ./stop.sh
   displayName: 'Stop Connector, Controller, and Agent'
+
+- script: |
+    tar -c --transform 's,^\.,demo,' --exclude-from=.artifactignore -v --bzip2 -f $BUILD_ARTIFACTSTAGINGDIRECTORY/demo.tar.bz2 .
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/demo.tar.bz2'
+    artifactName: 'demo.$(Build.BuildId).tar.bz2'
+
+- script: |
+    echo "===== IOFOG AGENT LOG ====="
+    docker exec iofog-agent cat /var/log/agent.out.log
+  displayName: 'Print logs'
+  condition: failed()
