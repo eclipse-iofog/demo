@@ -42,7 +42,7 @@ CONNECTOR_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddres
 
 echoInfo "Running Test Runner..."
 docker run --rm --name test-runner --network bridge \
-    -v ~/edgeworx/demo/test/conf/id_ecdsa:/root/.ssh/id_ecdsa \
+    -v "$(pwd)/test/conf/id_ecdsa:/root/.ssh/id_ecdsa" \
     -e CONTROLLER="${CONTROLLER_IP}:51121" \
     -e CONNECTOR="${CONNECTOR_IP}:8080" \
     -e AGENTS="root@${AGENT_IP}:22" \
