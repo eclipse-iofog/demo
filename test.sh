@@ -40,20 +40,12 @@ AGENT_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{
 CONTROLLER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-controller)
 CONNECTOR_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-connector)
 
-# Output the config for our Test suite config
-echo "${CONNECTOR_IP}:8080" >| test/conf/connector.conf
-echo "${CONTROLLER_IP}:51121" >| test/conf/controller.conf
-echo "root@${AGENT_IP}" >| test/conf/agents.conf
-
-echoInfo "Pulling Test Runner Image"
-docker-compose -f docker-compose-test.yml pull test-runner
-
-echoInfo "Running Test Runner suite"
-docker-compose -f docker-compose-test.yml up \
-    --build \
-    --abort-on-container-exit \
-    --exit-code-from test-runner \
-    --force-recreate \
-    --renew-anon-volumes
+echoInfo "Running Test Runner..."
+docker run --rm --name test-runner --network bridge \
+    -v ~/edgeworx/demo/test/conf/id_ecdsa:/root/.ssh/id_ecdsa \
+    -e CONTROLLER="${CONTROLLER_IP}:51121" \
+    -e CONNECTOR="${CONNECTOR_IP}:8080" \
+    -e AGENTS="root@${AGENT_IP}:22" \
+    iofog/test-runner:1.1.0
 
 echoNotify "## Test Runner Tests complete"
