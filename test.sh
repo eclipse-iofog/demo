@@ -35,17 +35,33 @@ else
     exit 2
 fi
 
-echoInfo "Retrieving endpoints for ioFog stack"
-AGENT_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-agent)
-CONTROLLER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-controller)
-CONNECTOR_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' iofog-connector)
+# Create a new ssh key
+echoInfo "Creating new ssh key for tests..."
+rm -f test/conf/id_ecdsa*
+ssh-keygen -t ecdsa -N "" -f test/conf/id_ecdsa -q
+
+# SSH Magic
+# Allows the test's container "test-runner" access to iofog-agent, due to the agent's lack of REST API
+AGENT_CONTAINER_ID=$(docker ps -q --filter="name=iofog-agent")
+
+# Configuring ssh on the agent
+echoInfo "Configuring ssh on the Agent"
+docker exec iofog-agent apt install -y openssh-server > /dev/null 2>&1
+docker exec iofog-agent mkdir -p /root/.ssh > /dev/null 2>&1
+docker exec iofog-agent chmod 700 /root/.ssh > /dev/null 2>&1
+docker cp test/conf/id_ecdsa.pub "$AGENT_CONTAINER_ID:/root/.ssh/authorized_keys" > /dev/null 2>&1
+docker exec iofog-agent chmod 644 /root/.ssh/authorized_keys > /dev/null 2>&1
+docker exec iofog-agent mkdir -p /var/run/sshd > /dev/null 2>&1
+docker exec iofog-agent sudo sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd > /dev/null 2>&1
+docker exec iofog-agent sudo sed 's@#AuthorizedKeysFile	%h/.ssh/authorized_keys@AuthorizedKeysFile	%h/.ssh/authorized_keys@g' -i /etc/ssh/sshd_config > /dev/null 2>&1
+docker exec iofog-agent /bin/bash -c 'service ssh restart' > /dev/null 2>&1
 
 echoInfo "Running Test Runner..."
-docker run --rm --name test-runner --network bridge \
+docker run --rm --name test-runner --network local-iofog-network \
     -v "$(pwd)/test/conf/id_ecdsa:/root/.ssh/id_ecdsa" \
-    -e CONTROLLER="${CONTROLLER_IP}:51121" \
-    -e CONNECTOR="${CONNECTOR_IP}:8080" \
-    -e AGENTS="root@${AGENT_IP}:22" \
+    -e CONTROLLER="iofog-controller:51121" \
+    -e CONNECTOR="iofog-connector:8080" \
+    -e AGENTS="root@iofog-agent:22" \
     iofog/test-runner:1.2
 
 echoNotify "## Test Runner Tests complete"

@@ -115,11 +115,6 @@ ENVIRONMENT=${ENVIRONMENT:="iofog"}
 
 echoInfo "Starting \"${ENVIRONMENT}\" demo environment..."
 
-# Create a new ssh key
-echoInfo "Creating new ssh key for tests..."
-rm -f test/conf/id_ecdsa*
-ssh-keygen -t ecdsa -N "" -f test/conf/id_ecdsa -q
-
 # Start ioFog stack
 startIofog
 
