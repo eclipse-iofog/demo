@@ -46,7 +46,9 @@ AGENT_CONTAINER_ID=$(docker ps -q --filter="name=iofog-agent")
 
 # Configuring ssh on the agent
 echoInfo "Configuring ssh on the Agent"
-docker exec iofog-agent apt install -y openssh-server > /dev/null 2>&1
+docker exec iofog-agent sudo rm /var/lib/apt/lists/lock > /dev/null 2>&1
+docker exec iofog-agent apt-get update -qq > /dev/null 2>&1
+docker exec iofog-agent apt-get install -qqy openssh-server > /dev/null 2>&1
 docker exec iofog-agent mkdir -p /root/.ssh > /dev/null 2>&1
 docker exec iofog-agent chmod 700 /root/.ssh > /dev/null 2>&1
 docker cp test/conf/id_ecdsa.pub "$AGENT_CONTAINER_ID:/root/.ssh/authorized_keys" > /dev/null 2>&1
