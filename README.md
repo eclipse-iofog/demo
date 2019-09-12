@@ -15,12 +15,11 @@ Supported operating systems:
 
 * Linux (kernel v3.10+)
 * macOS 10.12+
-* Windows 7+
 
 Requires tools:
 
 * Docker 1.10+ ([installation instructions](https://docs.docker.com/install/))
-* Docker-compose 1.22+ ([installation instructions](https://docs.docker.com/compose/install/))
+* iofogctl 1.3.0+ ([installation instructions](https://github.com/eclipse-iofog/iofogctl/tree/v1.3.0#install))
 
 
 # Try ioFog - Simple Edge Compute Network
@@ -52,38 +51,17 @@ When you are finished, tear down the ioFog stack and all services deployed on it
 ./stop.sh
 ```
 
-## Build from local packages
+## Build from local images
 
-If you have a local version of the Agent, Controller and Connector, you can chose to build the containers using those local packages.
-To do so, you will need a debian package (`.deb`) for the Agent and the Connector and a tarball (`.tgz`) for the Controller.
+If you have a local image version of the Agent, Controller and Connector, you can chose to build the containers using those local images.
+To do so, you will need a docker image for the Agent, the Connector and the Controller.
 You can provide `start.sh` with an option for each local package you want to use.
 
 ### Example
-Folder structure:
-```text
-* services
-* init
-* test
-* local-packages  # Example folder where you would store your local packages
-    - iofog-agent_2.0.deb
-    - iofog-connector_2.0.deb
-    - iofog-controller_2.0.tgz
-* start.sh
-* stop.sh
-* ...
-```
 
 Command:
 ```sh
-./start.sh -a ./local-packages/iofog-agent_2.0.deb -cn ./local-packages/iofog-connector_2.0.deb -ct ./local-packages/iofog-controller_2.0.tgz
-```
-
-## Force rebuild
-If you have previously built the containers using local packages, or remote packages and you want to ensure that running `start.sh` will rebuild the images, you can also provide the `--no-cache` option
-
-
-```sh
-./start.sh --no-cache
+./start.sh -a gcr.io/focal-freedom-236620/agent:latest -cn gcr.io/focal-freedom-236620/connector:latest -ct gcr.io/focal-freedom-236620/controller:latest
 ```
 
 ## ECN Status
@@ -94,22 +72,21 @@ If you have previously built the containers using local packages, or remote pack
 
 ## Interacting With The ioFog Stack - CLI
 
-The simplest way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface. The main interaction point for users is the Controller.
+The simplest way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface `iofogctl`.
 
 ```sh
-docker exec -it iofog-controller iofog-controller help
+iofogctl help
 ```
-For the purpose of this demo, all ioFog components are spun up in separate Docker containers. The Controller's container is called `iofog-controller` (the first occurrence in the above command) and the executable inside the container is also called `iofog-controller` (the second occurrence).)_
+
+For the purpose of this demo, all ioFog components are spun up in separate Docker containers. The Controller's container is called `iofog-controller`.
 
 Names for all the containers created in the demo are `iofog-agent`, `iofog-controller` and `iofog-connector`.
 
 The initialization scripts used to setup the ioFog stack / ECN are using the CLI interface. Feel free to refer to these for more inspiration.
 
-Full reference of the CLI for all ioFog stack components is available at the ioFog website:
+Full reference of the CLI is available at the iofogctl github repository:
 
-* https://iofog.org/docs/1.0.0/controllers/cli-usage.html
-* https://iofog.org/docs/1.0.0/agents/cli-usage.html
-* https://iofog.org/docs/1.0.0/connectors/cli-usage.html
+* https://github.com/eclipse-iofog/iofogctl/tree/v1.3.0#usage
 
 ## Interacting With The ioFog Stack - REST API
 
@@ -136,9 +113,16 @@ First, create all services for a tutorial ioFog application. You don't have to s
 ./start.sh tutorial
 ```
 
-When you are done with the tutorial, you can tear down the sample application together with the ioFog stack. Note there is currently no wya in the demo to tear down just the tutorial application.
+When you are done with the tutorial, you can tear down the sample application together with the ioFog stack.
+
 ```sh
 ./stop.sh
+```
+
+if you only wish to delete the tutorial application:
+
+```sh
+iofogctl delete application tutorial
 ```
 
 # Structure Of This Repository
@@ -149,8 +133,8 @@ When you are done with the tutorial, you can tear down the sample application to
         + iofog-connector   # Connector service files - part of the iofog stack
         + iofog-controller  # Controller service files - part of the iofog stack
 * init
-    - iofog                 # plain ioFog stack initialization service        
-    - tutorial              # tutorial initialization service
+    - iofog                 # plain ioFog stack initialization yaml file        
+    - tutorial              # tutorial initialization yaml file
 * test
     + conf                  # generated test configuration files 
 * azure-pipelines.yml

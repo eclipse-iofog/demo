@@ -1,0 +1,21 @@
+---
+controlplane:
+  images:	
+    controller: gcr.io/focal-freedom-236620/controller:latest
+    connector: docker.io/iofog/connector:latest
+  iofoguser:
+    name: test
+    surname: local
+    email: user@domain.com
+    password: '#Bugs4Fun'
+  controllers:	
+  - name: local-controller
+    host: localhost
+connectors:
+  - name: local-connector
+    host: localhost
+agents:	
+- name: ioFog Agent
+  image: gcr.io/focal-freedom-236620/agent:latest
+  host: localhost
+

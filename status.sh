@@ -16,10 +16,14 @@ prettyTitle "ioFog Demo Environment Status"
 echoInfo "  $(docker ps --filter 'name=iofog')"
 echo
 
+prettyTitle "ioFog Demo Edge Cloud Network Status"
+echoInfo "  $(iofogctl get all)"
+echo
+
 CONTROLLER_PORT="$(docker port iofog-controller | awk '{print $1}' | cut -b 1-5)"
 
-if [ ! -z ${CONTROLLER_PORT} ]; then
-    echoSuccess "## iofog-controller is running at http://localhost:${CONTROLLER_PORT}"
+if ! [[ -z ${CONTROLLER_PORT} ]]; then
+    echoSuccess "## iofog-controller is running at http://localhost:51121"
 else
     echoError "No iofog-controller container was found"
 fi
