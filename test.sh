@@ -53,6 +53,7 @@ docker exec iofog-agent mkdir -p /root/.ssh > /dev/null 2>&1
 docker exec iofog-agent chmod 700 /root/.ssh > /dev/null 2>&1
 docker cp test/conf/id_ecdsa.pub "$AGENT_CONTAINER_ID:/root/.ssh/authorized_keys" > /dev/null 2>&1
 docker exec iofog-agent chmod 644 /root/.ssh/authorized_keys > /dev/null 2>&1
+docker exec iofog-agent chown root:root /root/.ssh/authorized_keys > /dev/null 2>&1
 docker exec iofog-agent mkdir -p /var/run/sshd > /dev/null 2>&1
 docker exec iofog-agent sudo sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd > /dev/null 2>&1
 docker exec iofog-agent sudo sed 's@#AuthorizedKeysFile	%h/.ssh/authorized_keys@AuthorizedKeysFile	%h/.ssh/authorized_keys@g' -i /etc/ssh/sshd_config > /dev/null 2>&1
