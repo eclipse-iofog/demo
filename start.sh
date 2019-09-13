@@ -52,7 +52,7 @@ connectors:
   - name: local-connector
     host: localhost
 agents:	
-- name: ioFog Agent
+- name: local-agent
   image: $AGENT_IMAGE
   host: localhost
 " >| init/iofog/local-stack.yaml

@@ -2,7 +2,7 @@ name: tutorial
 microservices:
 - name: Sensors
   agent:
-    name: ioFog Agent
+    name: local-agent
   config: {}
   images:
     x86: iofog/sensors:latest
@@ -12,7 +12,7 @@ microservices:
   env: []
 - name: Rest API
   agent:
-    name: ioFog Agent
+    name: local-agent
   config: {}
   images:
     x86: iofog/freeboard-api:latest
@@ -24,7 +24,7 @@ microservices:
   env: []
 - name: Freeboard
   agent:
-    name: ioFog Agent
+    name: local-agent
   config: {}
   images:
     x86: iofog/freeboard:latest
