@@ -36,7 +36,14 @@ steps:
   displayName: 'Docker connect to Registry'
 
 - script: |
-    ./start.sh
+    docker pull gcr.io/focal-freedom-236620/controller:latest
+    docker pull gcr.io/focal-freedom-236620/agent:latest
+  displayName: 'Pull latest images'
+
+- script: |
+    # ./start.sh
+    # Use dev version of agent and controller until 1.3.0 release
+    ./start.sh -ct gcr.io/focal-freedom-236620/controller:latest -a gcr.io/focal-freedom-236620/agent:latest
   displayName: 'Start Connector, Controller, and Agent'
 
 - script: |
