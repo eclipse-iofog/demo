@@ -39,7 +39,6 @@ startIofog() {
 controlplane:
   images:	
     controller: $CONTROLLER_IMAGE
-    connector: $CONNECTOR_IMAGE
   iofoguser:
     name: test
     surname: local
@@ -51,14 +50,24 @@ controlplane:
 connectors:
   - name: local-connector
     host: localhost
+    image: $CONNECTOR_IMAGE
 agents:	
 - name: local-agent
-  image: $AGENT_IMAGE
   host: localhost
+  image: $AGENT_IMAGE
 " >| init/iofog/local-stack.yaml
 
     echoInfo "Deploying containers for ioFog stack..."
     iofogctl deploy -f init/iofog/local-stack.yaml
+}
+
+checkProvisioning() {
+    AGENT_UUID=$(docker exec -it iofog-agent iofog-agent info | grep 'UUID' | awk '{print $4}')
+
+    if [ "$AGENT_UUID" == "not" ]; then
+        echoError "Failed to provision the agent"
+        return 1
+    fi
 }
 
 startEnvironment() {
@@ -117,6 +126,7 @@ echoInfo "Starting \"${ENVIRONMENT}\" demo environment..."
 
 # Start ioFog stack
 startIofog
+checkProvisioning
 
 # Optionally start another environment
 if [[ "${ENVIRONMENT}" != "iofog" ]]; then
