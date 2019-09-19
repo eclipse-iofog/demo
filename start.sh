@@ -62,7 +62,7 @@ agents:
 }
 
 checkProvisioning() {
-    AGENT_UUID=$(docker exec -it iofog-agent iofog-agent info | grep 'UUID' | awk '{print $4}')
+    AGENT_UUID=$(docker exec iofog-agent iofog-agent info | grep 'UUID' | awk '{print $4}')
 
     if [ "$AGENT_UUID" == "not" ]; then
         echoError "Failed to provision the agent"
