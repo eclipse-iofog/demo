@@ -1,8 +1,7 @@
 ---
 controlplane:
   images:	
-    controller: docker.io/iofog/controller:latest
-    connector: docker.io/iofog/connector:latest
+    controller: gcr.io/focal-freedom-236620/controller:1.3.0-rc1
   iofoguser:
     name: test
     surname: local
@@ -14,8 +13,9 @@ controlplane:
 connectors:
   - name: local-connector
     host: localhost
+    image: gcr.io/focal-freedom-236620/connector:1.3.0-rc1
 agents:	
-- name: ioFog Agent
-  image: docker.io/iofog/agent:latest
+- name: local-agent
   host: localhost
+  image: gcr.io/focal-freedom-236620/agent:1.3.0-rc1
 
