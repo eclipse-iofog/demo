@@ -36,7 +36,10 @@ startIofog() {
     fi
 
     echo "---
-controlplane:
+kind: ControlPlane
+metadata:
+  name: local-ecn
+spec:
   images:	
     controller: $CONTROLLER_IMAGE
   iofoguser:
@@ -47,12 +50,18 @@ controlplane:
   controllers:	
   - name: local-controller
     host: localhost
-connectors:
-  - name: local-connector
-    host: localhost
-    image: $CONNECTOR_IMAGE
-agents:	
-- name: local-agent
+---
+kind: Connector
+metadata:
+  name: local-connector
+spec:
+  host: localhost
+  image: $CONNECTOR_IMAGE
+---
+kind: Agent
+metadata:
+  name: local-agent
+spec:
   host: localhost
   image: $AGENT_IMAGE
 " >| init/iofog/local-stack.yaml
