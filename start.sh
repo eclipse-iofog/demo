@@ -42,7 +42,7 @@ metadata:
 spec:
   images:	
     controller: $CONTROLLER_IMAGE
-  iofoguser:
+  iofogUser:
     name: test
     surname: local
     email: user@domain.com
