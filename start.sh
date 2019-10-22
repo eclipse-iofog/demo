@@ -36,6 +36,7 @@ startIofog() {
     fi
 
     echo "---
+apiVersion: iofog.org/v1
 kind: ControlPlane
 metadata:
   name: local-ecn
@@ -51,6 +52,7 @@ spec:
   - name: local-controller
     host: localhost
 ---
+apiVersion: iofog.org/v1
 kind: Connector
 metadata:
   name: local-connector
@@ -58,6 +60,7 @@ spec:
   host: localhost
   image: $CONNECTOR_IMAGE
 ---
+apiVersion: iofog.org/v1
 kind: Agent
 metadata:
   name: local-agent

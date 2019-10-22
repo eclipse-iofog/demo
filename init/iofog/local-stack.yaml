@@ -1,4 +1,5 @@
 ---
+apiVersion: iofog.org/v1
 kind: ControlPlane
 metadata:
   name: local-ecn
@@ -14,6 +15,7 @@ spec:
   - name: local-controller
     host: localhost
 ---
+apiVersion: iofog.org/v1
 kind: Connector
 metadata:
   name: local-connector
@@ -21,6 +23,7 @@ spec:
   host: localhost
   image: docker.io/iofog/connector:1.3.0-beta
 ---
+apiVersion: iofog.org/v1
 kind: Agent
 metadata:
   name: local-agent
