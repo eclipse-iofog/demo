@@ -1,9 +1,17 @@
 trigger:
   - master
   - develop
+  - release/*
 pr:
   - master
   - develop
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily build (UTC)
+  branches:
+    include:
+    - master
+    - develop
 
 pool:
   vmImage: 'ubuntu-16.04'
