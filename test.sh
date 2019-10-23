@@ -46,6 +46,6 @@ docker run --rm --name test-runner --network bridge \
     -e CONTROLLER="${CONTROLLER_IP}:51121" \
     -e CONNECTOR="${CONNECTOR_IP}:8080" \
     -e AGENTS="root@${AGENT_IP}:22" \
-    iofog/test-runner:1.1.0
+    iofog/test-runner:1.2
 
 echoNotify "## Test Runner Tests complete"
