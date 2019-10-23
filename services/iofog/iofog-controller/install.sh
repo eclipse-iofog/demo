@@ -6,5 +6,5 @@ if [ ! -z "$1" ] && [ ! "$1" = "./install.sh" ]; then
   npm install --unsafe-perm -g /opt/iofog-controller/"$1"
   rm -f /opt/iofog-controller/"$1"
 else
-  npm i -g iofogcontroller --unsafe-perm
+  npm i -g iofogcontroller@1.2 --unsafe-perm
 fi
