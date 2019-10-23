@@ -1,6 +1,9 @@
 FROM node:8.16.0-alpine
 
 ARG LOCAL_CONTROLLER_PACKAGE
+
+RUN set -ex && apk --no-cache add sudo
+
 # Copy local package, or default install script (No conditional copy in docker)
 COPY ./install.sh ${LOCAL_CONTROLLER_PACKAGE} /opt/iofog-controller/
 
