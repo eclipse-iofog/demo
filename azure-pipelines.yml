@@ -25,9 +25,9 @@ steps:
     releaseType: stable
 
 - script: |
-    https://packagecloud.io/install/repositories/iofog/iofogctl/script.deb.sh | sudo bash
+    # curl -s https://packagecloud.io/install/repositories/iofog/iofogctl/script.deb.sh | sudo bash
     # Using dev version of iofogctl until 1.3.0 release
-    # curl -s https://8c90601638aff0b3fb520971175089bbaba2cf7f29be9528:@packagecloud.io/install/repositories/iofog/iofogctl-snapshots/script.deb.sh | sudo bash
+    curl -s https://8c90601638aff0b3fb520971175089bbaba2cf7f29be9528:@packagecloud.io/install/repositories/iofog/iofogctl-snapshots/script.deb.sh | sudo bash
     sudo apt install iofogctl
   displayName: 'Install iofogctl'
 
