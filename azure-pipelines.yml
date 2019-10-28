@@ -42,7 +42,7 @@ steps:
 #   displayName: 'Pull latest images'
 
 - script: |
-    ./start.sh tutorial
+    ./start.sh tutorial || iofogctl version
     # Use dev version of agent and controller until 1.3.0 release
     # ./start.sh -ct gcr.io/focal-freedom-236620/controller:develop -a gcr.io/focal-freedom-236620/agent:develop -cn gcr.io/focal-freedom-236620/connector:develop
   displayName: 'Start Connector, Controller, Agent, and tutorial microservices'
