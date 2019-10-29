@@ -79,6 +79,7 @@ echo '' > $configureSSHLogFile
 } || {
     echoError "Failed to configure ssh on agent container"
     cat $configureSSHLogFile
+    exit 1
 }
 
 echoInfo "Running Test Runner..."
