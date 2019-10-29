@@ -46,18 +46,29 @@ AGENT_CONTAINER_ID=$(docker ps -q --filter="name=iofog-agent")
 
 # Configuring ssh on the agent
 echoInfo "Configuring ssh on the Agent"
-docker exec iofog-agent sudo rm /var/lib/apt/lists/lock > /dev/null 2>&1
-docker exec iofog-agent apt-get update -qq > /dev/null 2>&1
-docker exec iofog-agent apt-get install -qqy openssh-server > /dev/null 2>&1 || docker exec iofog-agent apt-get install -qqfy > /dev/null 2>&1
-docker exec iofog-agent mkdir -p /root/.ssh > /dev/null 2>&1
-docker exec iofog-agent chmod 700 /root/.ssh > /dev/null 2>&1
-docker cp test/conf/id_ecdsa.pub "$AGENT_CONTAINER_ID:/root/.ssh/authorized_keys" > /dev/null 2>&1
-docker exec iofog-agent chmod 644 /root/.ssh/authorized_keys > /dev/null 2>&1
-docker exec iofog-agent chown root:root /root/.ssh/authorized_keys > /dev/null 2>&1
-docker exec iofog-agent mkdir -p /var/run/sshd > /dev/null 2>&1
-docker exec iofog-agent sudo sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd > /dev/null 2>&1
-docker exec iofog-agent sudo sed 's@#AuthorizedKeysFile	%h/.ssh/authorized_keys@AuthorizedKeysFile	%h/.ssh/authorized_keys@g' -i /etc/ssh/sshd_config > /dev/null 2>&1
-docker exec iofog-agent /bin/bash -c 'service ssh restart' > /dev/null 2>&1
+# Init log file
+configureSSHLogFile=/tmp/configure_ssh.log
+if [ -f $configureSSHLogFile ]; then
+    rm $configureSSHLogFile
+fi
+echo '' > $configureSSHLogFile
+{
+    docker exec iofog-agent sudo rm /var/lib/apt/lists/lock >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent apt-get update -y  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent apt-get install -y openssh-server  >> $configureSSHLogFile 2>&1 || docker exec iofog-agent apt-get install -fy  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent mkdir -p /root/.ssh  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent chmod 700 /root/.ssh  >> $configureSSHLogFile 2>&1
+    docker cp test/conf/id_ecdsa.pub "$AGENT_CONTAINER_ID:/root/.ssh/authorized_keys"  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent chmod 644 /root/.ssh/authorized_keys  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent chown root:root /root/.ssh/authorized_keys  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent mkdir -p /var/run/sshd  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent sudo sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent sudo sed 's@#AuthorizedKeysFile	%h/.ssh/authorized_keys@AuthorizedKeysFile	%h/.ssh/authorized_keys@g' -i /etc/ssh/sshd_config  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent /bin/bash -c 'service ssh restart'  >> $configureSSHLogFile 2>&1
+} || {
+    echoError "Failed to configure ssh on agent container"
+    cat $configureSSHLogFile
+}
 
 echoInfo "Running Test Runner..."
 docker run --rm --name test-runner --network local-iofog-network \
