@@ -21,16 +21,31 @@ steps:
 - task: DockerInstaller@0
   displayName: Docker Installer
   inputs:
-    dockerVersion: 18.09.2
+    dockerVersion: 19.03.2
     releaseType: stable
+
+- script: |
+    # curl -s https://packagecloud.io/install/repositories/iofog/iofogctl/script.deb.sh | sudo bash
+    # Using dev version of iofogctl until 1.3.0 release
+    curl -s https://8c90601638aff0b3fb520971175089bbaba2cf7f29be9528:@packagecloud.io/install/repositories/iofog/iofogctl-snapshots/script.deb.sh | sudo bash
+    sudo apt install iofogctl=1.3.0-dev
+  displayName: 'Install iofogctl'
 
 - script: |
     echo $(gcp.svcacc) | docker login -u _json_key --password-stdin https://gcr.io
   displayName: 'Docker connect to Registry'
 
+# - script: |
+#     docker pull gcr.io/focal-freedom-236620/controller:develop
+#     docker pull gcr.io/focal-freedom-236620/connector:develop
+#     docker pull gcr.io/focal-freedom-236620/agent:develop
+#   displayName: 'Pull latest images'
+
 - script: |
-    ./start.sh
-  displayName: 'Start Connector, Controller, and Agent'
+    ./start.sh tutorial || iofogctl version
+    # Use dev version of agent and controller until 1.3.0 release
+    # ./start.sh -ct gcr.io/focal-freedom-236620/controller:develop -a gcr.io/focal-freedom-236620/agent:develop -cn gcr.io/focal-freedom-236620/connector:develop
+  displayName: 'Start Connector, Controller, Agent, and tutorial microservices'
 
 - script: |
     ./test.sh
