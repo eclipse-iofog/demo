@@ -58,7 +58,7 @@ echo '' > $configureSSHLogFile
     echo 'Updating apt-get' >> $configureSSHLogFile
     docker exec iofog-agent apt-get update -y  >> $configureSSHLogFile 2>&1
     echo 'Installing Openssh-server' >> $configureSSHLogFile
-    docker exec iofog-agent apt-get install -y openssh-server  >> $configureSSHLogFile 2>&1
+    docker exec iofog-agent apt-get install -y --fix-missing openssh-server  >> $configureSSHLogFile 2>&1
     echo 'Running apt-get install -fy' >> $configureSSHLogFile
     docker exec iofog-agent apt-get install -fy  >> $configureSSHLogFile 2>&1
     echo 'Creating ~/.ssh' >> $configureSSHLogFile
