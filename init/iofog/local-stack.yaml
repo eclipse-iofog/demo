@@ -4,8 +4,6 @@ kind: ControlPlane
 metadata:
   name: local-ecn
 spec:
-  images:	
-    controller: docker.io/iofog/controller:1.3.0-beta
   iofogUser:
     name: test
     surname: local
@@ -14,6 +12,8 @@ spec:
   controllers:	
   - name: local-controller
     host: localhost
+    container:
+      image: docker.io/iofog/controller:1.3.0-beta
 ---
 apiVersion: iofog.org/v1
 kind: Connector
@@ -21,7 +21,8 @@ metadata:
   name: local-connector
 spec:
   host: localhost
-  image: docker.io/iofog/connector:1.3.0-beta
+  container:
+    image: docker.io/iofog/connector:1.3.0-beta
 ---
 apiVersion: iofog.org/v1
 kind: Agent
@@ -29,5 +30,6 @@ metadata:
   name: local-agent
 spec:
   host: localhost
-  image: docker.io/iofog/agent:1.3.0-beta
+  container:
+    image: docker.io/iofog/agent:1.3.0-beta
 

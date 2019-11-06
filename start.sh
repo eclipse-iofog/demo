@@ -41,8 +41,6 @@ kind: ControlPlane
 metadata:
   name: local-ecn
 spec:
-  images:	
-    controller: $CONTROLLER_IMAGE
   iofogUser:
     name: test
     surname: local
@@ -51,6 +49,8 @@ spec:
   controllers:	
   - name: local-controller
     host: localhost
+    container:
+      image: $CONTROLLER_IMAGE
 ---
 apiVersion: iofog.org/v1
 kind: Connector
@@ -58,7 +58,8 @@ metadata:
   name: local-connector
 spec:
   host: localhost
-  image: $CONNECTOR_IMAGE
+  container:
+    image: $CONNECTOR_IMAGE
 ---
 apiVersion: iofog.org/v1
 kind: Agent
@@ -66,7 +67,8 @@ metadata:
   name: local-agent
 spec:
   host: localhost
-  image: $AGENT_IMAGE
+  container:
+    image: $AGENT_IMAGE
 " >| init/iofog/local-stack.yaml
 
     echoInfo "Deploying containers for ioFog stack..."
