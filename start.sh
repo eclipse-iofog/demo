@@ -93,9 +93,9 @@ startEnvironment() {
 
 ENVIRONMENT=''
 IOFOG_BUILD_NO_CACHE=''
-AGENT_IMAGE='docker.io/iofog/agent:1.3.0-beta'
-CONTROLLER_IMAGE='docker.io/iofog/controller:1.3.0-beta'
-CONNECTOR_IMAGE='docker.io/iofog/connector:1.3.0-beta'
+AGENT_IMAGE='docker.io/iofog/agent:1.3.0-rc1'
+CONTROLLER_IMAGE='docker.io/iofog/controller:1.3.0-rc1'
+CONNECTOR_IMAGE='docker.io/iofog/connector:1.3.0-rc1'
 while [[ "$#" -ge 1 ]]; do
     case "$1" in
         -h|--help)
