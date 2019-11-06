@@ -31,7 +31,7 @@ printHelp() {
 startIofog() {
     # If stack is running, skip
     local CONTROLLER_CONTAINER_ID=$(docker ps -q --filter="name=iofog-controller")
-    if ! [[ -z $CONTROLLER_CONTAINER_ID  ]]; then
+    if ! [[ -z "${CONTROLLER_CONTAINER_ID}"  ]]; then
         return
     fi
 
