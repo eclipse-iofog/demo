@@ -88,6 +88,6 @@ docker run --rm --name test-runner --network local-iofog-network \
     -e CONTROLLER="iofog-controller:51121" \
     -e CONNECTOR="iofog-connector:8080" \
     -e AGENTS="root@iofog-agent:22" \
-    iofog/test-runner:1.2
+    iofog/test-runner:1.3
 
 echoNotify "## Test Runner Tests complete"
