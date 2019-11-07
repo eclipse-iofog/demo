@@ -101,6 +101,22 @@ checkOSPlatform() {
 	export ID D_NUM
 }
 
+versionCompare() {
+    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+}
+
+checkIofogctl() {
+  IOFOGCTL_MINIMAL_VERSION="1.3.0"
+  if [[ -z "$(command -v iofogctl)" ]] ; then
+    echoError "iofogctl not found!"
+    exit 1;
+  fi
+  IOFOGCTL_VERSION=$(iofogctl version | sed -n 's/version: \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p')
+  if versionCompare "${IOFOGCTL_MINIMAL_VERSION}" "${IOFOGCTL_VERSION}"; then
+    echoError "iofogctl version not sufficient!"
+    exit 1;
+  fi
+}
 #
 # The following are a bunch or pretty printing echo methods
 #
@@ -139,3 +155,4 @@ echoError() {
 
 # Are we in debug mode?
 checkForDebug
+checkIofogctl
