@@ -72,7 +72,7 @@ spec:
 " >| init/iofog/local-stack.yaml
 
     echoInfo "Deploying containers for ioFog stack..."
-    iofogctl deploy -f init/iofog/local-stack.yaml
+    iofogctl deploy -f init/iofog/local-stack.yaml -v
 }
 
 checkProvisioning() {
@@ -88,7 +88,7 @@ startEnvironment() {
     local ENVIRONMENT="$1"
 
     echoInfo "Deploying ${ENVIRONMENT} application..."
-    iofogctl deploy application -f "init/${ENVIRONMENT}/config.yaml"
+    iofogctl deploy application -f "init/${ENVIRONMENT}/config.yaml" -v
     echoInfo "It may take a while before ioFog stack creates all ${ENVIRONMENT} microservices."
     echo ""
 }

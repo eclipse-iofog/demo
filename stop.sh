@@ -39,7 +39,7 @@ prettyHeader "Stopping ioFog Demo..."
 # Stop ioFog stack
 echoInfo "Stopping all containers..."
 
-iofogctl delete all || iofogctl disconnect
+iofogctl delete all -v || iofogctl disconnect
 
 # Remove generated files
 find test/conf -type f -not -name ".gitignore" -exec rm -f {} \;

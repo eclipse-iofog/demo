@@ -13,52 +13,31 @@ schedules:
     - master
     - develop
 
-pool:
-  vmImage: 'ubuntu-16.04'
+variables:
+  jobuuid: $(Build.BuildId)$(Agent.Id)
+  agent: ''
+  key: '/tmp/id_rsa'
+  cssh: 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $(key)'
+  dir: '/tmp/demo'
 
-steps:
+jobs:
 
-- task: DockerInstaller@0
-  displayName: Docker Installer
-  inputs:
-    dockerVersion: 19.03.2
-    releaseType: stable
+  - template: templates/job.yaml
+    parameters:
+      name: bionic
+      distro: $(gcp.vm.distro.bionic)
 
-- script: |
-    # curl -s https://packagecloud.io/install/repositories/iofog/iofogctl/script.deb.sh | sudo bash
-    # Using dev version of iofogctl until 1.3.0 release
-    curl -s https://8c90601638aff0b3fb520971175089bbaba2cf7f29be9528:@packagecloud.io/install/repositories/iofog/iofogctl-snapshots/script.deb.sh | sudo bash
-    sudo apt install iofogctl=1.3.0-dev
-  displayName: 'Install iofogctl'
+  - template: templates/job.yaml
+    parameters:
+      name: xenial
+      distro: $(gcp.vm.distro.xenial)
 
-- script: |
-    echo $(gcp.svcacc) | docker login -u _json_key --password-stdin https://gcr.io
-  displayName: 'Docker connect to Registry'
+  - template: templates/job.yaml
+    parameters:
+      name: buster
+      distro: $(gcp.vm.distro.buster)
 
-- script: |
-    ./start.sh tutorial
-    # Use dev version of agent and controller until 1.3.0 release
-    # ./start.sh -ct gcr.io/focal-freedom-236620/controller:develop -a gcr.io/focal-freedom-236620/agent:develop -cn gcr.io/focal-freedom-236620/connector:develop
-  displayName: 'Start Connector, Controller, Agent, and tutorial microservices'
-
-- script: |
-    ./test.sh
-  displayName: 'Run Tests'
-
-- script: |
-    ./stop.sh
-  displayName: 'Stop Connector, Controller, and Agent'
-
-- script: |
-    tar -c --transform 's,^\.,demo,' --exclude-from=.artifactignore -v --bzip2 -f $BUILD_ARTIFACTSTAGINGDIRECTORY/demo.tar.bz2 .
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/demo.tar.bz2'
-    artifactName: 'demo.$(Build.BuildId).tar.bz2'
-
-- script: |
-    echo "===== IOFOG AGENT LOG ====="
-    docker exec iofog-agent cat /var/log/agent.out.log
-  displayName: 'Print logs'
-  condition: failed()
+  - template: templates/job.yaml
+    parameters:
+      name: stretch
+      distro: $(gcp.vm.distro.stretch)
