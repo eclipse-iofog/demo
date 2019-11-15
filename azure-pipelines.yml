@@ -56,3 +56,10 @@ jobs:
       distro: $(gcp.vm.distro.centos8)
       repo: $(gcp.vm.repo.centos)
       pkgmgr: yum
+
+  - template: templates/job.yaml
+    parameters:
+      name: centos7
+      distro: $(gcp.vm.distro.centos7)
+      repo: $(gcp.vm.repo.centos)
+      pkgmgr: yum
