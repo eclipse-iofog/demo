@@ -1,5 +1,6 @@
 parameters:
   distro: ''
+  repo: ''
 
 steps:
 - task: DownloadSecureFile@1
@@ -17,7 +18,7 @@ steps:
   displayName: 'set up gcloud'
 - script: |
     distro=${{ parameters.distro }}
-    repo=$([[ $distro == *"debian"* ]] && echo "debian-cloud" || echo "ubuntu-os-cloud")
+    repo=${{ parameters.repo }}
     echo "distro: $distro"
     echo "repo: $repo"
     echo "gcp.project.name: $(gcp.project.name)"

@@ -26,18 +26,22 @@ jobs:
     parameters:
       name: bionic
       distro: $(gcp.vm.distro.bionic)
+      repo: $(gcp.vm.repo.ubuntu)
 
   - template: templates/job.yaml
     parameters:
       name: xenial
       distro: $(gcp.vm.distro.xenial)
+      repo: $(gcp.vm.repo.ubuntu)
 
   - template: templates/job.yaml
     parameters:
       name: buster
       distro: $(gcp.vm.distro.buster)
+      repo: $(gcp.vm.repo.debian)
 
   - template: templates/job.yaml
     parameters:
       name: stretch
       distro: $(gcp.vm.distro.stretch)
+      repo: $(gcp.vm.repo.debian)
