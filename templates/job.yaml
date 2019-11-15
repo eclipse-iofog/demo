@@ -2,6 +2,7 @@ parameters:
   name: ''
   distro: ''
   repo: ''
+  pkgmgr: ''
 
 jobs:
   - job: ${{ parameters.name }}
@@ -35,7 +36,7 @@ jobs:
         echo "key: $(key)"
         echo "agent: $(agent)"
         echo "dir: $(dir)"
-        $(cssh) $(agent) -- sudo apt -y install rsync
+        $(cssh) $(agent) -- sudo ${{ parameters.pkgmgr }} -y install rsync
         rsync -Pavr -e "ssh -i $(key) -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . $(agent):$(dir)
         $(cssh) $(agent) -- ls $(dir)
       displayName: 'Prepare VM'
