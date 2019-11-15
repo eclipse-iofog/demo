@@ -45,3 +45,9 @@ jobs:
       name: stretch
       distro: $(gcp.vm.distro.stretch)
       repo: $(gcp.vm.repo.debian)
+  
+  - template: templates/job.yaml
+    parameters:
+      name: centos8
+      distro: $(gcp.vm.distro.centos8)
+      repo: $(gcp.vm.repo.centos)
