@@ -1,6 +1,7 @@
 parameters:
   name: ''
   distro: ''
+  repo: ''
 
 jobs:
   - job: ${{ parameters.name }}
@@ -28,6 +29,7 @@ jobs:
     - template: vm-up.yaml
       parameters:
         distro: ${{ parameters.distro }}
+        repo: ${{ parameters.repo }}
     
     - script: |
         echo "key: $(key)"
