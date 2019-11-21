@@ -1,0 +1,5 @@
+steps:
+- script: |
+    gcloud compute --project=$(gcp.project.name) instances delete demo-ci-$(jobuuid) --zone=$(gcp.vm.zone) --delete-disks=all -q
+  displayName: 'Teardown VMs'
+  condition: always()

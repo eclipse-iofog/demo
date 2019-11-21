@@ -1,0 +1,83 @@
+parameters:
+  name: ''
+  distro: ''
+  repo: ''
+
+jobs:
+  - job: ${{ parameters.name }}
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+    steps:
+
+    - task: InstallSSHKey@0
+      inputs:
+        knownHostsEntry: $(ssh.knownhost)
+        sshPublicKey: $(ssh.pub)
+        sshKeySecureFile: id_rsa
+
+    - task: DownloadSecureFile@1
+      displayName: 'Download SSH keys to'
+      inputs:
+        secureFile: 'id_rsa'
+
+    - script: |
+        cat $(Agent.TempDirectory)/id_rsa > $(key)
+        chmod 600 $(key)
+      displayName: 'Prepare SSH key'
+
+    - template: vm-up.yaml
+      parameters:
+        distro: ${{ parameters.distro }}
+        repo: ${{ parameters.repo }}
+    
+    - script: |
+        echo "key: $(key)"
+        echo "agent: $(agent)"
+        echo "dir: $(dir)"
+        $(cssh) $(agent) -- sudo apt -y install rsync
+        rsync -Pavr -e "ssh -i $(key) -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" . $(agent):$(dir)
+        $(cssh) $(agent) -- ls $(dir)
+      displayName: 'Prepare VM'
+
+    - script: |
+        echo "agent: $(agent)"
+        echo "dir: $(dir)"
+        $(cssh) $(agent) -- sh $(dir)/bootstrap.sh
+        $(cssh) $(agent) -- docker ps
+        $(cssh) $(agent) -- iofogctl version
+      displayName: 'Bootstrap'
+    
+    - script: |
+        echo $(gcp.svcacc) > /tmp/svcacc.json
+        rsync -Pavr -e "ssh -i $(key) -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" /tmp/svcacc.json $(agent):/tmp/
+        $(cssh) $(agent) -- cat /tmp/svcacc.json | docker login -u _json_key --password-stdin https://gcr.io
+      displayName: 'Docker connect to Registry'
+    
+    # - script: |
+    #     docker pull gcr.io/focal-freedom-236620/controller:develop
+    #     docker pull gcr.io/focal-freedom-236620/connector:develop
+    #     docker pull gcr.io/focal-freedom-236620/agent:develop
+    #   displayName: 'Pull latest images'
+    
+    - script: |
+        $(cssh) $(agent) -- bash $(dir)/start.sh tutorial
+        # Use dev version of agent and controller until 1.3.0 release
+        # ./start.sh -ct gcr.io/focal-freedom-236620/controller:develop -a gcr.io/focal-freedom-236620/agent:develop -cn gcr.io/focal-freedom-236620/connector:develop
+      displayName: 'Start Connector, Controller, Agent, and tutorial microservices'
+    
+    - script: |
+        $(cssh) $(agent) -- bash $(dir)/test.sh
+      displayName: 'Run Tests'
+    
+    - script: |
+        $(cssh) $(agent) -- bash $(dir)/stop.sh
+      displayName: 'Stop Connector, Controller, and Agent'
+    
+    - script: |
+        echo "===== IOFOG AGENT LOG ====="
+        docker exec iofog-agent cat /var/log/agent.out.log
+      displayName: 'Print logs'
+      condition: failed()
+
+    - template: vm-down.yaml

@@ -1,0 +1,44 @@
+parameters:
+  distro: ''
+  repo: ''
+
+steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download secure file'
+  inputs:
+    secureFile: 'azure-gcp.json'
+- bash: |
+    echo "gcp.project.name: $(gcp.project.name)"
+    CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+    echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+    sudo apt-get update && sudo apt-get install google-cloud-sdk
+    gcloud --quiet auth activate-service-account --key-file=$(Agent.TempDirectory)/azure-gcp.json
+    gcloud --quiet config set project $(gcp.project.name)
+  displayName: 'set up gcloud'
+- script: |
+    distro=${{ parameters.distro }}
+    repo=${{ parameters.repo }}
+    echo "distro: $distro"
+    echo "repo: $repo"
+    echo "gcp.project.name: $(gcp.project.name)"
+    echo "gcp.vm.zone: $(gcp.vm.zone)"
+    echo "gcp.svcacc.name: $(gcp.svcacc.name)"
+    echo "jobuuid: $(jobuuid)"
+    gcloud compute --project=$(gcp.project.name) instances create demo-ci-$(jobuuid) --zone=$(gcp.vm.zone) --machine-type=n1-standard-1 --subnet=default --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=$(gcp.svcacc.name) --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --image=$distro --image-project=$repo --boot-disk-size=200GB --boot-disk-type=pd-standard --boot-disk-device-name=demo-ci-$(jobuuid)
+    vm_host=$(gcloud compute instances list | grep demo-ci-$(jobuuid) | awk '{print $5}')
+    echo "vm_host: $vm_host"
+    echo "##vso[task.setvariable variable=agent]$(gcp.vm.user)@$vm_host"
+  displayName: 'Deploy Test VM'
+- script: |
+    echo "agent: $(agent)"
+    seconds=0
+    until $(cssh) $(agent) -- echo "SSH success"; do
+      if [ $seconds -gt 60 ]; then
+        echo "Timed out waiting for $(agent)"
+        exit 1
+      fi
+      seconds=$((seconds+1))
+      sleep 1
+    done
+  displayName: 'Wait for SSH access'

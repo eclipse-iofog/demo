@@ -53,10 +53,15 @@ if [[ -f "${CONFIGURE_SSH_LOG_FILE}" ]]; then
 fi
 echo '' > "${CONFIGURE_SSH_LOG_FILE}"
 {
-    echo 'Removing /var/lib/apt/lists/lock' >> "${CONFIGURE_SSH_LOG_FILE}"
-    docker exec iofog-agent sudo rm /var/lib/apt/lists/lock >> "${CONFIGURE_SSH_LOG_FILE}" 2>&1
     echo 'Updating apt-get' >> "${CONFIGURE_SSH_LOG_FILE}"
-    docker exec iofog-agent apt-get update -y  >> "${CONFIGURE_SSH_LOG_FILE}" 2>&1
+    SECONDS=1
+    until docker exec iofog-agent apt-get update -y  >> "${CONFIGURE_SSH_LOG_FILE}" 2>&1; do
+        if [ $SECONDS -gt 60 ]; then
+            exit 1
+        fi
+        sleep 1
+        SECONDS=$((SECONDS+1))
+    done
     echo 'Installing Openssh-server' >> "${CONFIGURE_SSH_LOG_FILE}"
     docker exec iofog-agent apt-get install -y --fix-missing openssh-server  >> "${CONFIGURE_SSH_LOG_FILE}" 2>&1
     echo 'Running apt-get install -fy' >> "${CONFIGURE_SSH_LOG_FILE}"
