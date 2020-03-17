@@ -106,7 +106,7 @@ versionCompare() {
 }
 
 checkIofogctl() {
-  IOFOGCTL_MINIMAL_VERSION="1.3.0"
+  IOFOGCTL_MINIMAL_VERSION="2.0.0"
   if [[ -z "$(command -v iofogctl)" ]] ; then
     echoError "iofogctl not found!"
     exit 1;

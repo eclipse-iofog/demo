@@ -1,5 +1,5 @@
 ---
-apiVersion: iofog.org/v1
+apiVersion: iofog.org/v2
 kind: Application
 metadata:
   name: tutorial
@@ -12,9 +12,10 @@ spec:
     images:
       x86: iofog/sensors:latest
       registry: remote
-    volumes: []
-    ports: []
-    env: []
+    container:
+      volumes: []
+      ports: []
+      env: []
   - name: Rest API
     agent:
       name: local-agent
@@ -22,11 +23,12 @@ spec:
     images:
       x86: iofog/freeboard-api:latest
       registry: remote
-    volumes: []
-    ports:
-      - internal: 80
-        external: 10101
-    env: []
+    container:
+      volumes: []
+      ports:
+        - internal: 80
+          external: 10101
+      env: []
   - name: Freeboard
     agent:
       name: local-agent
@@ -34,11 +36,12 @@ spec:
     images:
       x86: iofog/freeboard:latest
       registry: remote
-    volumes: []
-    ports:
-      - internal: 80
-        external: 10102
-    env: []
+    container:
+      volumes: []
+      ports:
+        - internal: 80
+          external: 10102
+      env: []
   routes:
   - from: Sensors
     to: Rest API

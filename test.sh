@@ -91,8 +91,7 @@ echoInfo "Running Test Runner..."
 docker run --rm --name test-runner --network local-iofog-network \
     -v "$(pwd)/test/conf/id_ecdsa:/root/.ssh/id_ecdsa" \
     -e CONTROLLER="iofog-controller:51121" \
-    -e CONNECTOR="iofog-connector:8080" \
     -e AGENTS="root@iofog-agent:22" \
-    iofog/test-runner:1.3
+    iofog/test-runner:2.0
 
 echoNotify "## Test Runner Tests complete"
