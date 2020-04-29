@@ -53,11 +53,11 @@ install_iofogctl(){
     case "$DIST" in
         *ubuntu*|*debian*|*raspbian*)
             curl https://packagecloud.io/install/repositories/iofog/iofogctl/script.deb.sh | sudo bash
-            sudo apt-get install iofogctl=2.0.0-beta2
+            sudo apt-get install iofogctl=2.0.0-rc1
             ;;
         *fedora*|*centos*)
             curl https://packagecloud.io/install/repositories/iofog/iofogctl/script.rpm.sh | sudo bash
-            sudo yum install iofogctl-2.0.0-beta2-1.x86_64
+            sudo yum install iofogctl-2.0.0-rc1-1.x86_64
             ;;
         *)
             echo "Failed to install iofogctl"
