@@ -45,9 +45,8 @@ spec:
     surname: local
     email: user@domain.com
     password: '#Bugs4Fun'
-  controllers:	
-  - name: local-controller
-    host: localhost
+  controller:	
+    name: local-controller
     container:
       image: $CONTROLLER_IMAGE
 ---

@@ -36,7 +36,7 @@ else
 fi
 
 echoInfo "Running Test Runner..."
-# Testing local agent, need mounted docker socket to sue legacy agent commands
+# Testing local agent, need mounted docker socket to use legacy agent commands
 docker run --rm --name test-runner --network host \
     -v ~/.iofog/:/root/.iofog/ \
     -v /var/run/docker.sock:/var/run/docker.sock \
