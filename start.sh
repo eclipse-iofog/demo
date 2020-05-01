@@ -36,7 +36,7 @@ startIofog() {
 
     echo "---
 apiVersion: iofog.org/v2
-kind: ControlPlane
+kind: LocalControlPlane
 metadata:
   name: local-ecn
 spec:
@@ -52,7 +52,7 @@ spec:
       image: $CONTROLLER_IMAGE
 ---
 apiVersion: iofog.org/v2
-kind: Agent
+kind: LocalAgent
 metadata:
   name: local-agent
 spec:
