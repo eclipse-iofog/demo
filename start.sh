@@ -21,7 +21,6 @@ printHelp() {
 	echo "    -h, --help        print this help / usage"
 	echo "    -a, --agent       specify a local agent image"
 	echo "    -ct, --controller specify a local controller image"
-	echo "    -cn, --connector  specify a local connector image"
     echo ""
     echo "Arguments:"
 	echo "    [environment]     setup demo application, optional, default: iofog"
@@ -36,8 +35,8 @@ startIofog() {
     fi
 
     echo "---
-apiVersion: iofog.org/v1
-kind: ControlPlane
+apiVersion: iofog.org/v2
+kind: LocalControlPlane
 metadata:
   name: local-ecn
 spec:
@@ -46,23 +45,13 @@ spec:
     surname: local
     email: user@domain.com
     password: '#Bugs4Fun'
-  controllers:	
-  - name: local-controller
-    host: localhost
+  controller:	
+    name: local-controller
     container:
       image: $CONTROLLER_IMAGE
 ---
-apiVersion: iofog.org/v1
-kind: Connector
-metadata:
-  name: local-connector
-spec:
-  host: localhost
-  container:
-    image: $CONNECTOR_IMAGE
----
-apiVersion: iofog.org/v1
-kind: Agent
+apiVersion: iofog.org/v2
+kind: LocalAgent
 metadata:
   name: local-agent
 spec:
@@ -95,9 +84,8 @@ startEnvironment() {
 
 ENVIRONMENT=''
 IOFOG_BUILD_NO_CACHE=''
-AGENT_IMAGE='docker.io/iofog/agent:1.3.0'
-CONTROLLER_IMAGE='docker.io/iofog/controller:1.3.1'
-CONNECTOR_IMAGE='docker.io/iofog/connector:1.3.0'
+AGENT_IMAGE='docker.io/iofog/agent:2.0.0-rc1'
+CONTROLLER_IMAGE='docker.io/iofog/controller:2.0.0-rc1'
 while [[ "$#" -ge 1 ]]; do
     case "$1" in
         -h|--help)
@@ -111,11 +99,6 @@ while [[ "$#" -ge 1 ]]; do
             ;;
         -ct|--controller)
             CONTROLLER_IMAGE=${2:-$CONTROLLER_IMAGE}
-            shift
-            shift
-            ;;
-        -cn|--connector)
-            CONNECTOR_IMAGE=${2:-$CONNECTOR_IMAGE}
             shift
             shift
             ;;
@@ -152,5 +135,5 @@ fi
 ./status.sh
 
 if [[ "${ENVIRONMENT}" == "tutorial" ]]; then
-    echoSuccess "## Visit https://iofog.org/docs/1.3.0/tutorial/introduction.html to continue with the ioFog tutorial."
+    echoSuccess "## Visit https://iofog.org/docs/2.0.0/tutorial/introduction.html to continue with the ioFog tutorial."
 fi
