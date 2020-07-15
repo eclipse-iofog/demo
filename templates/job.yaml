@@ -61,6 +61,7 @@ jobs:
     #   displayName: 'Pull latest images'
     
     - script: |
+        $(cssh) $(agent) -- cat $(dir)/init/tutorial/config.yaml
         $(cssh) $(agent) -- bash $(dir)/start.sh tutorial
         # Use dev version of agent and controller until 1.3.0 release
         # ./start.sh -ct gcr.io/focal-freedom-236620/controller:develop -a gcr.io/focal-freedom-236620/agent:develop

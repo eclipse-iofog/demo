@@ -45,3 +45,4 @@ spec:
   routes:
   - from: Sensors
     to: Rest API
+    name: sensor-to-rest
