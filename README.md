@@ -19,7 +19,7 @@ Supported operating systems:
 Requires tools:
 
 * Docker 1.10+ ([installation instructions](https://docs.docker.com/install/))
-* iofogctl 1.3.0+ ([installation instructions](https://github.com/eclipse-iofog/iofogctl/tree/v1.3.0#install))
+* iofogctl 2.0.2 ([installation instructions](https://github.com/eclipse-iofog/iofogctl/tree/release/2.0#install))
 
 
 # Try ioFog - Simple Edge Compute Network
@@ -86,16 +86,15 @@ The initialization scripts used to setup the ioFog stack / ECN are using the CLI
 
 Full reference of the CLI is available at the iofogctl github repository:
 
-* https://github.com/eclipse-iofog/iofogctl/tree/v1.3.0#usage
+* https://github.com/eclipse-iofog/iofogctl/tree/release/2.0#usage
 
 ## Interacting With The ioFog Stack - REST API
 
 
 Full reference of the REST API for all ioFog stack components is available at the ioFog website:
 
-* https://iofog.org/docs/1.0.0/controllers/rest-api.html
-* https://iofog.org/docs/1.0.0/agents/local-api.html
-* https://iofog.org/docs/1.0.0/connectors/api-reference.html
+* https://iofog.org/docs/2/reference-controller/rest-api.html
+* https://iofog.org/docs/2/reference-agent/rest-api.html
 
 You can try using the REST API directly on your machine with the ioFog stack running.
 ```sh
@@ -130,7 +129,6 @@ iofogctl delete application tutorial
 * services                  # Service Dockerfiles and customization files
     - iofog
         + iofog-agent       # Agent service files - part of the iofog stack
-        + iofog-connector   # Connector service files - part of the iofog stack
         + iofog-controller  # Controller service files - part of the iofog stack
 * init
     - iofog                 # plain ioFog stack initialization yaml file        
