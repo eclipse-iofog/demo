@@ -84,8 +84,8 @@ startEnvironment() {
 
 ENVIRONMENT=''
 IOFOG_BUILD_NO_CACHE=''
-AGENT_IMAGE='docker.io/iofog/agent:2.0.0-rc2'
-CONTROLLER_IMAGE='docker.io/iofog/controller:2.0.0-rc2'
+AGENT_IMAGE='docker.io/iofog/agent:2.0.2'
+CONTROLLER_IMAGE='docker.io/iofog/controller:2.0.1'
 while [[ "$#" -ge 1 ]]; do
     case "$1" in
         -h|--help)
@@ -135,5 +135,5 @@ fi
 ./status.sh
 
 if [[ "${ENVIRONMENT}" == "tutorial" ]]; then
-    echoSuccess "## Visit https://iofog.org/docs/2.0.0/tutorial/introduction.html to continue with the ioFog tutorial."
+    echoSuccess "## Visit https://iofog.org/docs/2/tutorial/introduction.html to continue with the ioFog tutorial."
 fi
