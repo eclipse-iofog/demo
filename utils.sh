@@ -26,7 +26,7 @@ checkForDebug() {
 # Display a nice title line for any output. You can optionally populate it with a string
 #
 # Usage: prettyTitle "Bootstrapping ioFog"
-#
+
 prettyTitle() {
 	echoInfo "## $1 ####################################################"
 }
@@ -38,7 +38,7 @@ prettyTitle() {
 #
 prettyHeader() {
 	echoInfo "## $1 ####################################################"
-	echoInfo "## Copyright (C) 2020, Edgeworx, Inc."
+	echoInfo "## Copyright (C) 2021, Edgeworx, Inc."
 	echo
 }
 
@@ -106,7 +106,7 @@ versionCompare() {
 }
 
 checkIofogctl() {
-  IOFOGCTL_MINIMAL_VERSION="2.0.2"
+  IOFOGCTL_MINIMAL_VERSION="2.0.4"
   if [[ -z "$(command -v iofogctl)" ]] ; then
     echoError "iofogctl not found!"
     exit 1;

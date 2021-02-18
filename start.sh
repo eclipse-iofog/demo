@@ -84,7 +84,7 @@ startEnvironment() {
 
 ENVIRONMENT=''
 IOFOG_BUILD_NO_CACHE=''
-AGENT_IMAGE='docker.io/iofog/agent:2.0.2'
+AGENT_IMAGE='docker.io/iofog/agent:2.0.4'
 CONTROLLER_IMAGE='docker.io/iofog/controller:2.0.1'
 while [[ "$#" -ge 1 ]]; do
     case "$1" in
