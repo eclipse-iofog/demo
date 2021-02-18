@@ -1,3 +1,10 @@
+
+## v2.0.4
+* Update iofogctl, controller and agent version
+
+## v2.0.3
+* Update iofogctl, controller and agent version
+
 ## v2.0.2
 * Update iofogctl, controller and agent version
 
