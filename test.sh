@@ -40,6 +40,6 @@ echoInfo "Running Test Runner..."
 docker run --rm --name test-runner --network host \
     -v ~/.iofog/:/root/.iofog/ \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    iofog/test-runner:3.0.0-alpha1
+    gcr.io/focal-freedom-236620/test-runner:3.0.0-dev
 
 echoNotify "## Test Runner Tests complete"
