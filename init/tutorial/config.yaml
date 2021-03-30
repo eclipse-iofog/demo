@@ -5,7 +5,7 @@ metadata:
   name: tutorial
 spec:
   microservices:
-  - name: Sensors
+  - name: sensors
     agent:
       name: local-agent
     config: {}
@@ -16,7 +16,7 @@ spec:
       volumes: []
       ports: []
       env: []
-  - name: Rest API
+  - name: rest-api
     agent:
       name: local-agent
     config: {}
@@ -29,7 +29,7 @@ spec:
         - internal: 80
           external: 10101
       env: []
-  - name: Freeboard
+  - name: freeboard
     agent:
       name: local-agent
     config: {}
@@ -43,6 +43,6 @@ spec:
           external: 10102
       env: []
   routes:
-  - from: Sensors
-    to: Rest API
+  - from: sensors
+    to: rest-api
     name: sensor-to-rest
