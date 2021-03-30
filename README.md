@@ -19,7 +19,7 @@ Supported operating systems:
 Requires tools:
 
 * Docker 1.10+ ([installation instructions](https://docs.docker.com/install/))
-* iofogctl 2.0.2 ([installation instructions](https://github.com/eclipse-iofog/iofogctl/tree/release/2.0#install))
+* iofogctl 3.0+ ([installation instructions](https://iofog.org/docs/3/iofogctl/download.html))
 
 
 # Try ioFog - Simple Edge Compute Network
@@ -75,7 +75,7 @@ Command:
 The simplest way to interact with Agent, Controller, and Connector deployed on a machine you have access to is to use the command line interface `iofogctl`.
 
 ```sh
-iofogctl help
+iofogctl --help
 ```
 
 For the purpose of this demo, all ioFog components are spun up in separate Docker containers. The Controller's container is called `iofog-controller`.
@@ -84,23 +84,17 @@ Names for all the containers created in the demo are `iofog-agent`, `iofog-contr
 
 The initialization scripts used to setup the ioFog stack / ECN are using the CLI interface. Feel free to refer to these for more inspiration.
 
-Full reference of the CLI is available at the iofogctl github repository:
-
-* https://github.com/eclipse-iofog/iofogctl/tree/release/2.0#usage
-
 ## Interacting With The ioFog Stack - REST API
-
 
 Full reference of the REST API for all ioFog stack components is available at the ioFog website:
 
-* https://iofog.org/docs/2/reference-controller/rest-api.html
-* https://iofog.org/docs/2/reference-agent/rest-api.html
+* https://iofog.org/docs/3/reference-controller/rest-api.html
+* https://iofog.org/docs/3/reference-agent/rest-api.html
 
 You can try using the REST API directly on your machine with the ioFog stack running.
 ```sh
 curl --url 'http://0.0.0.0:51121/api/v3/status' 
 ```
-
 
 # Try ioFog - Tutorial Application Deployed On ioFog
 
