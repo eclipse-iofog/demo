@@ -13,6 +13,7 @@ spec:
       x86: iofog/sensors:latest
       registry: remote
     container:
+      rootHostAccess: false
       volumes: []
       ports: []
       env: []
@@ -24,6 +25,7 @@ spec:
       x86: iofog/freeboard-api:latest
       registry: remote
     container:
+      rootHostAccess: false
       volumes: []
       ports:
         - internal: 80
@@ -37,6 +39,7 @@ spec:
       x86: iofog/freeboard:latest
       registry: remote
     container:
+      rootHostAccess: false
       volumes: []
       ports:
         - internal: 80
