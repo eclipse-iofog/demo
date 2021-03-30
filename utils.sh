@@ -106,12 +106,12 @@ versionCompare() {
 }
 
 checkIofogctl() {
-  IOFOGCTL_MINIMAL_VERSION="3.0.0-alpha1"
+  local IOFOGCTL_MINIMAL_VERSION="3.0.0"
   if [[ -z "$(command -v iofogctl)" ]] ; then
     echoError "iofogctl not found!"
     exit 1;
   fi
-  IOFOGCTL_VERSION=$(iofogctl version | sed -n 's/version: \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p')
+  local IOFOGCTL_VERSION=$(iofogctl version  | grep version | sed "s/version//g" | tr -d ': ' | sed "s/\-.*//g")
   if versionCompare "${IOFOGCTL_MINIMAL_VERSION}" "${IOFOGCTL_VERSION}"; then
     echoError "iofogctl version not sufficient!"
     exit 1;
